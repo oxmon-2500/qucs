@@ -819,7 +819,7 @@ void QucsApp::slotSelectComponent(QListWidgetItem *item)
   }
 
   if(view->drawn)
-    ((Q3ScrollView*)DocumentTab->currentWidget())->viewport()->update();
+    ((QGraphicsView*)DocumentTab->currentWidget())->viewport()->update();
   view->drawn = false;
 
   // toggle last toolbar button off
@@ -1608,7 +1608,7 @@ void QucsApp::slotFileSaveAll()
   QString tabType = DocumentTab->currentWidget()->metaObject()->className();
 
   if (tabType == "Schematic") {
-    ((Q3ScrollView*)DocumentTab->currentWidget())->viewport()->update();
+    ((QGraphicsView*)DocumentTab->currentWidget())->viewport()->update();
   }
   view->drawn = false;
   statusBar()->showMessage(tr("Ready."));
@@ -2412,7 +2412,7 @@ void QucsApp::slotSelectSubcircuit(const QModelIndex &idx)
   view->selElem = Comp;
 
   if(view->drawn)
-    ((Q3ScrollView*)DocumentTab->currentWidget())->viewport()->update();
+    ((QGraphicsView*)DocumentTab->currentWidget())->viewport()->update();
   view->drawn = false;
   MouseMoveAction = &MouseActions::MMoveElement;
   MousePressAction = &MouseActions::MPressElement;
