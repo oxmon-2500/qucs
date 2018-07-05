@@ -18,9 +18,8 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include <Q3PtrList>
-
 #include "element.h"
+#include "qt_compat.h"
 
 class Schematic;
 class ViewPainter;
