@@ -31,6 +31,8 @@ MOCHEADERS = diagramdialog.h markerdialog.h
 MOCFILES = $(MOCHEADERS:.h=.moc.cpp)
 
 libdiagrams_la_CXXFLAGS = ${AM_CXXFLAGS} -fPIC
+include ../../common.mk
+
 libdiagrams_la_SOURCES = tabdiagram.cpp smithdiagram.cpp rectdiagram.cpp \
   polardiagram.cpp graph.cpp diagramdialog.cpp diagram.cpp marker.cpp   \
   markerdialog.cpp psdiagram.cpp rect3ddiagram.cpp curvediagram.cpp     \
