@@ -28,8 +28,6 @@ qucsdir=${pkglibdir}
 
 qucs_LTLIBRARIES = libcomponents.la
 
-include ../../common.mk
-
 MOCHEADERS = componentdialog.h spicedialog.h optimizedialog.h spicefile.h
 MOCFILES = $(MOCHEADERS:.h=.moc.cpp)
 
