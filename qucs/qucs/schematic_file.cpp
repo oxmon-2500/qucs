@@ -654,6 +654,9 @@ void Schematic::simpleInsertComponent(Component *c)
   }
 
   DocComps.append(c);
+
+  // add Component to scene
+  scene()->addItem(new ElementGraphics(c));
 }
 
 // -------------------------------------------------------------
