@@ -1755,7 +1755,7 @@ bool QucsApp::closeTabsRange(int startTab, int stopTab, int exceptTab)
     }
   } while (doc != stopDoc);
 
-  switchEditMode(true);   // set schematic edit mode
+  switchEditMode(true);
   return true;
 }
 
@@ -1833,7 +1833,7 @@ void QucsApp::slotChangeView(QWidget *w)
     // already in schematic?
     if(cursorLeft->isEnabled()) {
       // which mode: schematic or symbol editor ?
-      if((CompChoose->count() > 1) == d->symbolMode)
+      if((CompChoose->count() > 1) == d->isSymbolMode())
         changeSchematicSymbolMode (d);
     }
     else {
@@ -2536,14 +2536,14 @@ void QucsApp::switchEditMode(bool SchematicMode)
 // ---------------------------------------------------------
 void QucsApp::changeSchematicSymbolMode(Schematic *Doc)
 {
-  if(Doc->symbolMode) {
+  if(Doc->isSymbolMode()) {
     // go into select modus to avoid placing a forbidden element
     select->setChecked(true);
 
     switchEditMode(false);
-  }
-  else
+  }else{
     switchEditMode(true);
+  }
 }
 
 // ---------------------------------------------------------
@@ -2581,8 +2581,8 @@ void QucsApp::slotSymbolEdit()
 
     // change into symbol mode
     if (paint_mode) // but only switch coordinates if newly loaded
-      SDoc->switchPaintMode();
-    SDoc->symbolMode = true;
+      SDoc->switchPaintMode(); // toggles SymbolMode (wtf?)
+    SDoc->setSymbolMode(true);
     changeSchematicSymbolMode(SDoc);
     SDoc->becomeCurrent(true);
     SDoc->viewport()->update();
@@ -2598,7 +2598,7 @@ void QucsApp::slotSymbolEdit()
     // in a normal schematic
     else {
       slotHideEdit(); // disable text edit of component property
-      SDoc->switchPaintMode();   // twist the view coordinates
+      SDoc->switchPaintMode(); // toggles SymbolMode (wtf?)
       changeSchematicSymbolMode(SDoc);
       SDoc->becomeCurrent(true);
       SDoc->viewport()->update();
