@@ -173,6 +173,7 @@ void SchematicModel::toScene(QGraphicsScene& s) const
   for(auto i : wires()){ itested();
     s.addItem(new ElementGraphics(i));
   }
+  qDebug() << "wires" << s.items().size();
   s.update();
 }
 #endif
