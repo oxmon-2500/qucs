@@ -1907,7 +1907,7 @@ void MouseActions::MReleasePaste(Schematic *Doc, QMouseEvent *Event)
   incomplete();
 #if 0
   int x1, y1, x2, y2, rot;
-  QFileInfo Info(Doc->DocName);
+  QFileInfo Info(Doc->docName());
   //QPainter painter(Doc->viewport());
   QPointF pos=Doc->mapToScene(Event->pos());
 
@@ -2071,7 +2071,7 @@ void MouseActions::editElement(Schematic *Doc, QMouseEvent *Event)
   MarkerDialog *mdia;
   int x1, y1, x2, y2;
 
-  QFileInfo Info(Doc->DocName);
+  QFileInfo Info(Doc->docName());
 
   QPointF pos=Doc->mapToScene(Event->pos());
   float fX=pos.x();
