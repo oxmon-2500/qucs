@@ -712,7 +712,7 @@ bool SchematicModel::loadComponents(QTextStream *stream)
       for(z=c->name().length()-1; z>=0; z--) // cut off number of component name
         if(!c->name().at(z).isDigit()) break;
       c->obsolete_name_override_hack(c->name().left(z+1));
-      List->append(c);
+      //List->append(c);
     }else{
       simpleInsertComponent(c);
     }
@@ -824,8 +824,7 @@ bool SchematicModel::loadWires(QTextStream *stream /*, EGPList *List */)
       }else{
       }
 #endif
-    }else simpleInsertWire(w);
-    } else {
+    {
       simpleInsertWire(w);
     }
   }
@@ -885,7 +884,7 @@ bool SchematicModel::loadDiagrams(QTextStream *stream /*, DiagramList *List */)
 }
 
 // -------------------------------------------------------------
-bool SchematicModel::loadPaintings(QTextStream *stream)
+bool SchematicModel::loadPaintings(QTextStream *stream, PaintingList*)
 {
   incomplete();
   return false;
@@ -1004,7 +1003,7 @@ bool SchematicModel::loadDocument(QFile& /*BUG*/ file)
       if(!loadDiagrams(&stream /*, diagrams()??? */ )) { file.close(); return false; } }
     else
     if(Line == "<Paintings>") {
-      if(!paintings().load(&stream)) { file.close(); return false; } }
+      if(!paintings().load(&stream)) { file.close(); return false; }
     }else {
        qDebug() << Line;
        QMessageBox::critical(0, QObject::tr("Error"),

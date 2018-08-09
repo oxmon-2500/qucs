@@ -236,6 +236,7 @@ public: // model
 
   QList<PostedPaintEvent>   PostedPaintEvents;
 private:
+public: // BUG
   PaintingList& symbolPaintings();
 private:
   bool SymbolMode;
