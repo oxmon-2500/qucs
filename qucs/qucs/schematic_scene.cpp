@@ -153,5 +153,12 @@ void SchematicScene::drawBackground(QPainter *painter, const QRectF &rect)
 			GridY *= 16;
 		}
 	}
-#endif
 }
+#endif
+
+void ElementGraphics::paintScheme(Schematic *p)
+{
+  	assert(_e);
+	_e->paintScheme(p);
+}
+
