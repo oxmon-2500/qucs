@@ -313,7 +313,7 @@ protected:
 
 public:
 #ifdef USE_SCROLLVIEW
-  QPointF mapToScene(QPoint const& p);
+  QPointF mapToScene(QPoint const& p) const;
 #endif
 
 protected slots:
