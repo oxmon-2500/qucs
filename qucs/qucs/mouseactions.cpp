@@ -1870,6 +1870,7 @@ void MouseActions::MReleasePaste(Schematic *Doc, QMouseEvent *Event)
   int x1, y1, x2, y2, rot;
   QFileInfo Info(Doc->DocName);
   //QPainter painter(Doc->viewport());
+  QPointF pos=Doc->mapToScene(Event->pos());
 
   Element *pe;
   switch(Event->button()) {
@@ -1935,8 +1936,8 @@ void MouseActions::MReleasePaste(Schematic *Doc, QMouseEvent *Event)
       paintElementsScheme(Doc);
     drawn = true;
 
-    x1 = DOC_X_POS(Event->pos().x());
-    y1 = DOC_Y_POS(Event->pos().y());
+    x1 = pos.x();
+    y1 = pos.y();
     rotateElements(Doc,x1,y1);
     paintElementsScheme(Doc);
     // save rotation

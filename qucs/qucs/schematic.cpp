@@ -2300,7 +2300,7 @@ void PaintingList::sizeOfAll(int& xmin, int& ymin, int& xmax, int& ymax) const
 
 // ---------------------------------------------------
 #ifdef USE_SCROLLVIEW
-QPointF Schematic::mapToScene(QPoint const& p)
+QPointF Schematic::mapToScene(QPoint const& p) const
 {
   float fX=float(p.x())/Scale + float(ViewX1);
   float fY=float(p.y())/Scale + float(ViewY1);
