@@ -132,6 +132,7 @@ Schematic *openSchematic(QString schematic)
   return sch;
 }
 
+// BUG: does not belong to main.cpp
 int doNetlist(QString schematic, QString netlist)
 { untested();
   Schematic *sch = openSchematic(schematic);
@@ -145,18 +146,18 @@ int doNetlist(QString schematic, QString netlist)
   QByteArray ba = schematic.toLatin1();
   const char *c_net = ba.data();
 
+  // BUG: use references to reference stuff.
   QStringList Collect;
 
   QPlainTextEdit *ErrText = new QPlainTextEdit();  //dummy
   QFile NetlistFile;
   QTextStream   Stream;
 
-  Collect.clear();  // clear list for NodeSets, SPICE components etc.
-
   NetlistFile.setFileName(netlist);
   if(!NetlistFile.open(QIODevice::WriteOnly)) {
     fprintf(stderr, "Error: Could not load netlist %s\n", c_net);
     return -1;
+  }else{untested();
   }
 
   Stream.setDevice(&NetlistFile);
@@ -168,6 +169,7 @@ int doNetlist(QString schematic, QString netlist)
     /// \todo better handling for error/warnings
     qCritical() << ErrText->toPlainText();
     return 1;
+  }else{ untested();
   }
 
   // output NodeSets, SPICE simulations etc.
@@ -177,15 +179,24 @@ int doNetlist(QString schematic, QString netlist)
     if ((*it).right(4) != ".lst" &&
     (*it).right(5) != ".vhdl" &&
     (*it).right(4) != ".vhd" &&
-    (*it).right(2) != ".v") {
+    (*it).right(2) != ".v") { untested();
+//      Stream << "Collect?!" << '\n';
+//      BUG: this is called too often.
       Stream << *it << '\n';
+    }else{ untested();
     }
+  }
+  if(Collect.isEmpty()){ untested();
+  }else{
   }
 
   Stream << '\n';
 
   QString SimTime = sch->createNetlist(Stream, SimPorts);
-  delete(sch);
+
+  { untested();
+    delete(sch);
+  }
 
   NetlistFile.close();
 
@@ -803,7 +814,7 @@ int main(int argc, char *argv[])
       return -1;
     }
     // create netlist from schematic
-    if (netlist_flag) {
+    if (netlist_flag) { untested();
       return doNetlist(inputfile, outputfile);
     } else if (print_flag) {
       return doPrint(inputfile, outputfile,

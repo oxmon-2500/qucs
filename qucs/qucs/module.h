@@ -21,6 +21,7 @@
 #include <QList>
 #include <QHash>
 #include <QMap>
+#include "trace.h"
 
 class Element;
 
@@ -51,8 +52,10 @@ class Module
  public:
   pInfoFunc info = 0;
   pInfoVAFunc infoVA = 0;
-  QString category;
+  QString category; // BUG Category
 };
+
+class Categories;
 
 class Category
 {
@@ -62,16 +65,45 @@ class Category
   ~Category ();
 
  public:
-  static QList<Category *> Categories;
+  static Categories categories; // BUG. Module::categories?
+  QString const& name() const{ return Name; }
 
  public:
   static QStringList getCategories (void);
   static QList<Module *> getModules (QString);
-  static int getModulesNr (QString);
 
  public:
   QString Name;
   QList<Module *> Content;
+};
+
+class Categories{
+public:
+	typedef QList<Category*> container_type;
+	typedef container_type::iterator iterator;
+	typedef container_type::const_iterator const_iterator;
+
+public:
+	~Categories();
+
+public:
+	const_iterator begin() const{ return _container.begin(); }
+	const_iterator end() const{ return _container.end(); }
+	const_iterator append(Category* x){ _container.append(x); return _container.end() - 1; }
+
+	const Category* at(unsigned i) const{ return _container.at(i); }
+
+	// BUG? destructor?
+	void eraseAll(){
+	  while(!_container.isEmpty()) {
+		 delete _container.takeFirst();
+	  }
+	}
+
+	int getModulesNr (QString);
+
+private:
+  QList<Category*> _container;
 };
 
 #endif /* __MODULE_H__ */

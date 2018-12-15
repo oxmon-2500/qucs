@@ -69,10 +69,10 @@ pqucs_LTLIBRARIES = \
 	libqucsschematic.la
 
 libqucs_la_SOURCES = \
+	module.cpp \
 	misc.cpp \
 	viewpainter.cpp \
 	globals.cpp \
-	module.cpp \
 	io_error.cpp
 
 # TODO:
