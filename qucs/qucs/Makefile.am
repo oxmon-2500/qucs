@@ -86,7 +86,7 @@ libqucsschematic_la_SOURCES = \
   schematic_action.cpp \
   schematic_model.cpp \
   schematic_scene.cpp \
-  schematic_file.cpp syntax.cpp module.cpp octave_window.cpp \
+  schematic_file.cpp syntax.cpp octave_window.cpp \
   messagedock.cpp imagewriter.cpp printerwriter.cpp \
   projectView.cpp
 
