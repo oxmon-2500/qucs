@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QTextStream> // tmp: used as baseclass, should be member.
 #include <assert.h>
 
 #include "actions.h"
@@ -112,5 +113,13 @@ protected: // cleaning up debris
 	QAction* selectAction();
 	MouseActions* mouseActions();
 };
+
+class DocumentStream : public QTextStream {
+public:
+  explicit DocumentStream(QString /* BUG const */ * filename, QIODevice::OpenModeFlag flag) :
+    QTextStream(filename, flag){}
+
+};
+
 
 #endif
