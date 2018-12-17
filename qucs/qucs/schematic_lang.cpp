@@ -3,11 +3,12 @@
 
 #include "qucsdoc.h"
 #include "schematic_model.h"
+#include "schematic_lang.h"
 #include "globals.h"
 
-class LegacySchematicLanguage : public DocumentLanguage {
+class LegacySchematicLanguage : public SchematicLanguage {
 public:
-	LegacySchematicLanguage() : DocumentLanguage(){
+	LegacySchematicLanguage() : SchematicLanguage(){ untested();
 		defaultSchematicLanguage = this;
 	}
 private:

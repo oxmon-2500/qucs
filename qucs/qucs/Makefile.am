@@ -69,10 +69,11 @@ pqucs_LTLIBRARIES = \
 	libqucsschematic.la
 
 libqucs_la_SOURCES = \
+	globals.cpp \
+  schematic_lang.cpp \
 	module.cpp \
 	misc.cpp \
 	viewpainter.cpp \
-	globals.cpp \
 	io_error.cpp
 
 # TODO:
@@ -86,7 +87,6 @@ libqucsschematic_la_SOURCES = \
   schematic_action.cpp \
   schematic_model.cpp \
   schematic_scene.cpp \
-  schematic_lang.cpp \
   schematic_file.cpp syntax.cpp octave_window.cpp \
   messagedock.cpp imagewriter.cpp printerwriter.cpp \
   projectView.cpp
