@@ -1034,7 +1034,7 @@ bool Schematic::loadDocument()
     // scene()->loadModel(DocModel); // ??
 #ifndef USE_SCROLLVIEW
     QGraphicsScene& s=*scene();
-    DocModel.toScene(s);
+//    DocModel.toScene(s);
 #endif
     return true;
   }

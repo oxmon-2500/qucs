@@ -271,10 +271,10 @@ public:
 		// return -1;
 	};
 #endif
-	const_iterator begin() const{ untested();
+	const_iterator begin() const{
 		return localList.begin();
 	}
-	const_iterator end() const{ untested();
+	const_iterator end() const{
 		return localList.end();
 	}
 	iterator begin(){
