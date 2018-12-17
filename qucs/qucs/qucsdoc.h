@@ -114,8 +114,10 @@ protected: // cleaning up debris
 	MouseActions* mouseActions();
 };
 
+class QFile;
 class DocumentStream : public QTextStream {
 public:
+  explicit DocumentStream(QFile* /* BUG const */ file);
   explicit DocumentStream(QString /* BUG const */ * filename, QIODevice::OpenModeFlag flag) :
     QTextStream(filename, flag){}
 
