@@ -171,14 +171,14 @@ void ElementGraphics::paintScheme(Schematic *p)
 // 'l' is a bit of a hack. let's see
 void SchematicModel::toScene(QGraphicsScene& s, QList<ElementGraphics*>* l) const
 {
-  for(auto i : components()){ itested();
+  for(auto i : components()){ untested();
     auto x=new ElementGraphics(i);
 	 if(l){
 		 l->append(x);
 	 }
     s.addItem(x);
   }
-  for(auto i : wires()){ itested();
+  for(auto i : wires()){ untested();
     auto x=new ElementGraphics(i);
 	 if(l){
 		 l->append(x);

@@ -23,6 +23,7 @@
 #include <QTextStream> // tmp: used as baseclass, should be member.
 #include <assert.h>
 
+#include "object.h"
 #include "actions.h"
 #include "trace.h"
 
@@ -121,6 +122,14 @@ public:
   explicit DocumentStream(QString /* BUG const */ * filename, QIODevice::OpenModeFlag flag) :
     QTextStream(filename, flag){}
 
+};
+// baseclass for schematic and net languages.
+class DocumentLanguage : public Object{
+protected:
+	DocumentLanguage() : Object(){}
+public:
+	virtual ~DocumentLanguage() {}
+// virtual void parse(DocumentStream& stream, SchematicModel*) const=0;
 };
 
 

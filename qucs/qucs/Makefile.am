@@ -86,6 +86,7 @@ libqucsschematic_la_SOURCES = \
   schematic_action.cpp \
   schematic_model.cpp \
   schematic_scene.cpp \
+  schematic_lang.cpp \
   schematic_file.cpp syntax.cpp octave_window.cpp \
   messagedock.cpp imagewriter.cpp printerwriter.cpp \
   projectView.cpp
@@ -116,6 +117,7 @@ libqucsschematic_la_LIBADD = # libqucsgui.la
 endif
 
 noinst_HEADERS = $(MOCHEADERS) wire.h qucsdoc.h element.h node.h \
+  schematic_lang.h \
 	qt_compat.h trace.h \
   wirelabel.h viewpainter.h mnemo.h mouseactions.h syntax.h module.h misc.h \
   projectView.h printerwriter.h imagewriter.h actions.h

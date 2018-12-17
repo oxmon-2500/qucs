@@ -19,7 +19,11 @@
 class Symbol;
 class Simulator;
 class NetLang;
+class DocumentLanguage;
 
 extern INTERFACE Dispatcher<Symbol> symbol_dispatcher;
 extern INTERFACE Dispatcher<Simulator> simulator_dispatcher;
 extern INTERFACE Dispatcher<NetLang> netlang_dispatcher;
+extern INTERFACE Dispatcher<DocumentLanguage> doclang_dispatcher;
+
+extern DocumentLanguage const* defaultSchematicLanguage;
