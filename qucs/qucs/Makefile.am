@@ -121,7 +121,12 @@ noinst_HEADERS = $(MOCHEADERS) wire.h qucsdoc.h element.h node.h \
   projectView.h printerwriter.h imagewriter.h actions.h
 
 # must be installed. but later
-noinst_HEADERS += platform.h globals.h l_dispatcher.h io_trace.h
+noinst_HEADERS += \
+	globals.h \
+	io_trace.h \
+	l_dispatcher.h \
+	object.h \
+	platform.h
 
 hicolor16dir = ${prefix}/share/icons/hicolor/16x16/apps
 hicolor16_DATA =  bitmaps/hicolor/16x16/apps/qucs.png
