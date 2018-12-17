@@ -18,3 +18,6 @@
 Dispatcher<Symbol> symbol_dispatcher;
 Dispatcher<Simulator> simulator_dispatcher;
 Dispatcher<NetLang> netlang_dispatcher;
+
+// for now. where are options?
+DocumentLanguage const* defaultSchematicLanguage;
