@@ -25,6 +25,7 @@
 class QProcess;
 class QTextStream;
 class QString;
+class DocumentStream;
 
 class SpiceFile : public QObject, public MultiViewComponent  {
    Q_OBJECT
@@ -37,7 +38,7 @@ public:
   static Element* info(QString&, char* &, bool getNewOne=false);
 
   bool withSim;
-  bool createSubNetlist(QTextStream *);
+  bool createSubNetlist(DocumentStream&);
   QString getErrorText() { return ErrText; }
   QString getSubcircuitFile();
 

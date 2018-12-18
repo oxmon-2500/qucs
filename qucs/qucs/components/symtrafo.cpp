@@ -17,19 +17,11 @@
 
 #include "qucs.h"
 #include "symtrafo.h"
-
-#include<QFontMetrics>
-
+#include "some_font_stuff.h"
 
 symTrafo::symTrafo()
 {
   Description = QObject::tr("ideal symmetrical transformer");
-
-  QFont Font(QucsSettings.font); // default application font
-  // symbol text is smaller (10 pt default)
-  Font.setPointSize(10); 
-  // get the small font size; use the screen-compatible metric
-  QFontMetrics  smallmetrics(Font, 0);
 
   int w;
   QString stmp;
@@ -60,9 +52,9 @@ symTrafo::symTrafo()
   Lines.append(new Line( -1,-57, -1, 57,QPen(Qt::darkBlue,1)));
   Lines.append(new Line(  1,-57,  1, 57,QPen(Qt::darkBlue,1)));
 
-  stmp = "T1"; w = smallmetrics.width(stmp); // compute width to right-align
+  stmp = "T1"; w = get_some_width(stmp); // compute width to right-align
   Texts.append(new Text(-13-w,-57,stmp));
-  stmp = "T2"; w = smallmetrics.width(stmp); // compute width to right-align
+  stmp = "T2"; w = get_some_width(stmp);
   Texts.append(new Text(-13-w, 22,stmp));
 
   // mark the turn direction

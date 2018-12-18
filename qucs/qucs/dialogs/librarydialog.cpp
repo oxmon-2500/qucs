@@ -426,7 +426,7 @@ void LibraryDialog::slotSave()
   bool Success = true, ret;
 
   QString tmp;
-  QTextStream ts(&tmp, QIODevice::WriteOnly);
+  DocumentStream ts(&tmp, QIODevice::WriteOnly);
 
   for (int i=0; i < SelectedNames.count(); i++) {
     ErrText->insertPlainText("\n=================\n");
@@ -457,7 +457,7 @@ void LibraryDialog::slotSave()
 
     ErrText->insertPlainText("\n");
     ErrText->insertPlainText(tr("Creating Qucs netlist.\n"));
-    ret = Doc->createLibNetlist(&ts, ErrText, -1);
+    ret = Doc->createLibNetlist(ts, ErrText, -1);
     if(ret) {
       intoStream(Stream, tmp, "Model");
       int error = 0;
@@ -495,7 +495,7 @@ void LibraryDialog::slotSave()
 
     ErrText->insertPlainText("\n");
     ErrText->insertPlainText(tr("Creating Verilog netlist.\n"));
-    ret = Doc->createLibNetlist(&ts, ErrText, 0);
+    ret = Doc->createLibNetlist(ts, ErrText, 0);
     if(ret) {
       intoStream(Stream, tmp, "VerilogModel");
       int error = 0;
@@ -532,7 +532,7 @@ void LibraryDialog::slotSave()
     Doc->isAnalog = false;
 
     ErrText->insertPlainText(tr("Creating VHDL netlist.\n"));
-    ret = Doc->createLibNetlist(&ts, ErrText, 0);
+    ret = Doc->createLibNetlist(ts, ErrText, 0);
     if(ret) {
       intoStream(Stream, tmp, "VHDLModel");
       int error = 0;
