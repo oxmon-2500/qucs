@@ -794,6 +794,7 @@ void SchematicModel::saveComponent(QTextStream& s, Component /*const*/ * c)
 }
 // -------------------------------------------------------
 // FIXME: must be Component* SchematicParser::loadComponent(Stream&, Component*);
+// BUG: need to move to SchematicModel first.
 Component* Schematic::loadComponent(const QString& _s, Component* c) const
 {
   qDebug() << "load" << _s;
@@ -1620,7 +1621,7 @@ void GateComponent::createSymbol()
 // FIXME:
 // must be Component* SomeParserClass::getComponent(QString& Line)
 // better: Component* SomeParserClass::getComponent(SomeDataStream& s)
-Component* getComponentFromName(QString& Line, Schematic* p)
+Component* getComponentFromName(QString& Line, SchematicModel* sp)
 {
   Component *c = 0;
 
@@ -1674,6 +1675,11 @@ Component* getComponentFromName(QString& Line, Schematic* p)
   }
 
   // BUG: don't use schematic.
+  QucsDoc* qd=sp->doc();
+  assert(qd); // BUG;
+  Schematic* p=prechecked_cast<Schematic*>(qd);
+  assert(p);
+
   if(!p->loadComponent(Line, c)) {
     QMessageBox::critical(0, QObject::tr("Error"),
 	QObject::tr("Format Error:\nWrong 'component' line format!"));
