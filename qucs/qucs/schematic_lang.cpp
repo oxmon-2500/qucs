@@ -14,6 +14,10 @@ public:
 private:
 	void parse(DocumentStream& stream, SchematicModel* s) const {
 		QString Line;
+
+		// mode: a throwback to the legacy format:
+		//       connect legacy "parsers".
+		// this is not needed in a proper SchematicLanguage
 		char mode='\0';
 		while(!stream.atEnd()) {
 			Line = stream.readLine();
@@ -25,6 +29,8 @@ private:
 			}else if(Line.isEmpty()){
 			}else if(Line == "<Components>") {
 				mode='C';
+			}else if(Line == "<Symbols>") {
+				mode='S';
 			}else if(Line == "<Wires>") {
 				mode='W';
 			}else if(Line == "<Diagrams>") { untested();
@@ -36,7 +42,9 @@ private:
 				/// \todo enable user to load partial schematic, skip unknown components
 				Element*c=NULL;
 				if(mode=='C'){
-					c = getComponentFromName(Line, NULL /*???*/);
+					c = getComponentFromName(Line, s /*connect ports?*/);
+				}else if(mode=='S'){
+//					if(!symbolPaintings().load(&stream))
 				}else if(mode=='W'){
 					// (Node*)4 =  move all ports (later on)
 					Wire* w = new Wire(0,0,0,0, (Node*)4,(Node*)4);

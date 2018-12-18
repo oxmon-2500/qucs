@@ -691,7 +691,7 @@ bool SchematicModel::loadComponents(QTextStream *stream)
     if(Line.isEmpty()) continue;
 
     /// \todo enable user to load partial schematic, skip unknown components
-    c = getComponentFromName(Line, d);
+    c = getComponentFromName(Line, this);
     if(!c) return false;
 
 
@@ -767,6 +767,7 @@ void SchematicModel::simpleInsertWire(Wire *pw)
 }
 
 // -------------------------------------------------------------
+// obsolete.
 bool SchematicModel::loadWires(QTextStream *stream /*, EGPList *List */)
 {
   QList<ElementGraphics*>* List=nullptr; //?
