@@ -155,7 +155,7 @@ int doNetlist(QString schematic, QString netlist)
   // BUG: use references to reference stuff.
   QStringList Collect;
 
-  QPlainTextEdit *ErrText = new QPlainTextEdit();  //dummy
+  QPlainTextEdit *ErrText = nullptr;// new QPlainTextEdit();  // wtf?
   QFile NetlistFile;
   DocumentStream   Stream;
 
