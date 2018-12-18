@@ -215,8 +215,6 @@ public: // model
 	  return *Paintings;
   }
 
-  PaintingList  SymbolPaints;  // symbol definition for subcircuit
-
   QList<PostedPaintEvent>   PostedPaintEvents;
 private:
 public: // BUG

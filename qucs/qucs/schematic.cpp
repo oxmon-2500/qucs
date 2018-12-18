@@ -67,7 +67,7 @@ ComponentList SymbolComps;
 
 PaintingList& Schematic::symbolPaintings()
 { untested();
-  return SymbolPaints;
+  return DocModel.symbolPaintings();
 }
 
 void Schematic::printCursorPosition(int x, int y)
@@ -107,7 +107,6 @@ Schematic::Schematic(QucsApp *App_, const QString& Name_)
   tmpScale = 1.0;
 
   DocPaints.setAutoDelete(true);
-  SymbolPaints.setAutoDelete(true);
 
   // The 'i' means state for being unchanged.
   undoActionIdx = 0;
@@ -187,33 +186,33 @@ bool Schematic::createSubcircuitSymbol()
   unsigned int countPort = adjustPortNumbers();
 
   // If a symbol does not yet exist, create one.
-  if(SymbolPaints.count() != countPort)
+  if(symbolPaintings().count() != countPort)
     return false;
 
   int h = 30*((countPort-1)/2) + 10;
-  SymbolPaints.prepend(new ID_Text(-20, h+4));
+  symbolPaintings().prepend(new ID_Text(-20, h+4));
 
-  SymbolPaints.append(
+  symbolPaintings().append(
      new GraphicLine(-20, -h, 40,  0, QPen(Qt::darkBlue,2)));
-  SymbolPaints.append(
+  symbolPaintings().append(
      new GraphicLine( 20, -h,  0,2*h, QPen(Qt::darkBlue,2)));
-  SymbolPaints.append(
+  symbolPaintings().append(
      new GraphicLine(-20,  h, 40,  0, QPen(Qt::darkBlue,2)));
-  SymbolPaints.append(
+  symbolPaintings().append(
      new GraphicLine(-20, -h,  0,2*h, QPen(Qt::darkBlue,2)));
 
   unsigned int i=0, y = 10-h;
   while(i<countPort) {
     i++;
-    SymbolPaints.append(
+    symbolPaintings().append(
        new GraphicLine(-30, y, 10, 0, QPen(Qt::darkBlue,2)));
-    SymbolPaints.at(i)->setCenter(-30,  y);
+    symbolPaintings().at(i)->setCenter(-30,  y);
 
     if(i == countPort)  break;
     i++;
-    SymbolPaints.append(
+    symbolPaintings().append(
        new GraphicLine( 20, y, 10, 0, QPen(Qt::darkBlue,2)));
-    SymbolPaints.at(i)->setCenter(30,  y);
+    symbolPaintings().at(i)->setCenter(30,  y);
     y += 60;
   }
   return true;
@@ -249,12 +248,12 @@ void Schematic::becomeCurrent(bool update)
     // Nodes = &SymbolNodes;
     // Wires = &SymbolWires;
     //Diagrams = &SymbolDiags;
-    Paintings = &SymbolPaints;
+    Paintings = &symbolPaintings();
     // Components = &SymbolComps;
 
     // if no symbol yet exists -> create one
     if(createSubcircuitSymbol()) {
-      SymbolPaints.sizeOfAll(UsedX1, UsedY1, UsedX2, UsedY2);
+      symbolPaintings().sizeOfAll(UsedX1, UsedY1, UsedX2, UsedY2);
       setChanged(true, true);
     }
 
@@ -1496,7 +1495,7 @@ int Schematic::adjustPortNumbers()
     // Wires      = &SymbolWires;
     // Nodes      = &SymbolNodes;
     // Diagrams   = &SymbolDiags;
-    Paintings  = &SymbolPaints;
+    Paintings  = &symbolPaintings();
     incomplete();
     sizeOfAll(x1, y1, x2, y2);
 #if 0
@@ -1514,7 +1513,7 @@ int Schematic::adjustPortNumbers()
 
   Painting *pp;
   // delete all port names in symbol
-  for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+  for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
     if(pp->Name == ".PortSym ")
       ((PortSymbol*)pp)->nameStr = "";
 
@@ -1546,7 +1545,7 @@ int Schematic::adjustPortNumbers()
     if (!VInfo.PortNames.isEmpty())
       Names = VInfo.PortNames.split(",", QString::SkipEmptyParts);
 
-    for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+    for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
       if(pp->Name == ".ID ") {
 	ID_Text * id = (ID_Text *) pp;
 	id->Prefix = VInfo.EntityName.toUpper();
@@ -1572,14 +1571,14 @@ int Schematic::adjustPortNumbers()
 
       Str = QString::number(Number);
       // search for matching port symbol
-      for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+      for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
 	if(pp->Name == ".PortSym ")
 	  if(((PortSymbol*)pp)->numberStr == Str) break;
 
       if(pp)
 	((PortSymbol*)pp)->nameStr = *it;
       else {
-	SymbolPaints.append(new PortSymbol(x1, y2, Str, *it));
+	symbolPaintings().append(new PortSymbol(x1, y2, Str, *it));
 	y2 += 40;
       }
     }
@@ -1606,7 +1605,7 @@ int Schematic::adjustPortNumbers()
     if (!VInfo.PortNames.isEmpty())
       Names = VInfo.PortNames.split(",", QString::SkipEmptyParts);
 
-    for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+    for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
       if(pp->Name == ".ID ") {
 	ID_Text * id = (ID_Text *) pp;
 	id->Prefix = VInfo.ModuleName.toUpper();
@@ -1618,14 +1617,14 @@ int Schematic::adjustPortNumbers()
 
       Str = QString::number(Number);
       // search for matching port symbol
-      for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+      for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
 	if(pp->Name == ".PortSym ")
 	  if(((PortSymbol*)pp)->numberStr == Str) break;
 
       if(pp)
 	((PortSymbol*)pp)->nameStr = *it;
       else {
-	SymbolPaints.append(new PortSymbol(x1, y2, Str, *it));
+	symbolPaintings().append(new PortSymbol(x1, y2, Str, *it));
 	y2 += 40;
       }
     }
@@ -1653,7 +1652,7 @@ int Schematic::adjustPortNumbers()
     if (!VInfo.PortNames.isEmpty())
       Names = VInfo.PortNames.split(",", QString::SkipEmptyParts);
 
-    for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+    for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
       if(pp->Name == ".ID ") {
 	ID_Text * id = (ID_Text *) pp;
 	id->Prefix = VInfo.ModuleName.toUpper();
@@ -1665,14 +1664,14 @@ int Schematic::adjustPortNumbers()
 
       Str = QString::number(Number);
       // search for matching port symbol
-      for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+      for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
 	if(pp->Name == ".PortSym ")
 	  if(((PortSymbol*)pp)->numberStr == Str) break;
 
       if(pp)
 	((PortSymbol*)pp)->nameStr = *it;
       else {
-	SymbolPaints.append(new PortSymbol(x1, y2, Str, *it));
+	symbolPaintings().append(new PortSymbol(x1, y2, Str, *it));
 	y2 += 40;
       }
     }
@@ -1687,7 +1686,7 @@ int Schematic::adjustPortNumbers()
 
              Str = pc->Props.getFirst()->Value;
              // search for matching port symbol
-             for(pp = SymbolPaints.first(); pp!=0; pp = SymbolPaints.next())
+             for(pp = symbolPaintings().first(); pp!=0; pp = symbolPaintings().next())
              {
                  if(pp->Name == ".PortSym ")
                  {
@@ -1701,7 +1700,7 @@ int Schematic::adjustPortNumbers()
              }
              else
              {
-                 SymbolPaints.append(new PortSymbol(x1, y2, Str, pc->name()));
+                 symbolPaintings().append(new PortSymbol(x1, y2, Str, pc->name()));
                  y2 += 40;
              }
           }
@@ -1709,14 +1708,14 @@ int Schematic::adjustPortNumbers()
   }
 
   // delete not accounted port symbols
-  for(pp = SymbolPaints.first(); pp!=0; ) {
+  for(pp = symbolPaintings().first(); pp!=0; ) {
     if(pp->Name == ".PortSym ")
       if(((PortSymbol*)pp)->nameStr.isEmpty()) {
-        SymbolPaints.remove();
-        pp = SymbolPaints.current();
+        symbolPaintings().remove();
+        pp = symbolPaintings().current();
         continue;
       }
-    pp = SymbolPaints.next();
+    pp = symbolPaintings().next();
   }
 
   return countPort;
