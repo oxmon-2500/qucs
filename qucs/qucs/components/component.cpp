@@ -543,7 +543,7 @@ void Component::mirrorX()
   int tmp = y1;
   y1  = -y2; y2 = -tmp;   // mirror boundings
   // use the screen-compatible metric
-  QFontMetrics  metrics(QucsSettings.font, 0);   // get size of text
+  FontMetrics metrics;
   int dy = 0;
   if(showName)
     dy = metrics.lineSpacing();   // for "Name"
@@ -801,7 +801,7 @@ void SchematicModel::saveComponent(QTextStream& s, Component /*const*/ * c)
 // -------------------------------------------------------
 // FIXME: must be Component* SchematicParser::loadComponent(Stream&, Component*);
 // BUG: need to move to SchematicModel first.
-Component* Schematic::loadComponent(const QString& _s, Component* c) const
+Component* SchematicModel::loadComponent(const QString& _s, Component* c) const
 {
   qDebug() << "load" << _s;
   bool ok;
@@ -1682,11 +1682,11 @@ Component* getComponentFromName(QString& Line, SchematicModel* sp)
 
   // BUG: don't use schematic.
   QucsDoc* qd=sp->doc();
-  assert(qd); // BUG;
-  Schematic* p=prechecked_cast<Schematic*>(qd);
-  assert(p);
+  //assert(qd); // BUG;
+  //Schematic* p=prechecked_cast<Schematic*>(qd);
+  //assert(p);
 
-  if(!p->loadComponent(Line, c)) {
+  if(!sp->loadComponent(Line, c)) {
     QMessageBox::critical(0, QObject::tr("Error"),
 	QObject::tr("Format Error:\nWrong 'component' line format!"));
     delete c;
