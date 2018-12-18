@@ -40,7 +40,7 @@ private:
 			}else{
 
 				/// \todo enable user to load partial schematic, skip unknown components
-				Element*c=NULL;
+				Element*c=nullptr;
 				if(mode=='C'){
 					c = getComponentFromName(Line, s /*connect ports?*/);
 				}else if(mode=='S'){
