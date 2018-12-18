@@ -118,6 +118,7 @@ protected: // cleaning up debris
 class QFile;
 class DocumentStream : public QTextStream {
 public:
+  explicit DocumentStream(){ incomplete(); }
   explicit DocumentStream(QFile* /* BUG const */ file);
   explicit DocumentStream(QString /* BUG const */ * filename, QIODevice::OpenModeFlag flag) :
     QTextStream(filename, flag){}

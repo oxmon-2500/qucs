@@ -408,13 +408,15 @@ private:
    *****  and their pointers. ("DocComps", "Components" etc.)     *****
    ******************************************************************** */
 
-public:
+public: //?
+  void parse(DocumentStream& stream, SchematicLanguage const*l=nullptr){
+	  return DocModel.parse(stream, l);
+  }
+public: // not here.
   static int testFile(const QString &);
-  bool createLibNetlist(QTextStream*, QPlainTextEdit*, int);
-  bool createSubNetlist(QTextStream *, int&, QStringList&, QPlainTextEdit*, int);
-  void createSubNetlistPlain(QTextStream*, QPlainTextEdit*, int);
-  int  prepareNetlist(QTextStream&, QStringList&, QPlainTextEdit*);
-  QString createNetlist(QTextStream&, int);
+  bool createSubNetlist(DocumentStream& a, int& b, QStringList& c, QPlainTextEdit* d, int e){
+	  return DocModel.createSubNetlist(a,b,c,d,e);
+  }
   bool loadDocument();
   void highlightWireLabels (void);
 
@@ -432,20 +434,35 @@ private:
   QString createSymbolUndoString(char);
   bool    rebuildSymbol(QString *);
 
-  static void createNodeSet(QStringList&, int&, Conductor*, Node*);
-  void throughAllNodes(bool, QStringList&, int&);
-  void propagateNode(QStringList&, int&, Node*);
-  void collectDigitalSignals(void);
-  bool giveNodeNames(QTextStream *, int&, QStringList&, QPlainTextEdit*, int);
+  void throughAllNodes(bool a, QStringList&b, int&c){
+	  incomplete();
+	  return DocModel.throughAllNodes(a, b, c);
+  }
+  bool giveNodeNames(DocumentStream& a, int&b, QStringList&c, QPlainTextEdit*d, int e){
+	  incomplete();
+	  return DocModel.giveNodeNames(a,b,c,d,e);
+  }
   void beginNetlistDigital(QTextStream &);
   void endNetlistDigital(QTextStream &);
-  bool throughAllComps(QTextStream *, int&, QStringList&, QPlainTextEdit *, int);
-
+//  bool throughAllComps(QTextStream* a, int& b, QStringList&c, QPlainTextEdit* d, int e){
+//	  incomplete();
+//	  return DocModel.throughAllComps(a,b,c,d,e);
+//  }
   DigMap Signals; // collecting node names for VHDL signal declarations
-  QStringList PortTypes;
 
-public: // for now. move to parser asap
+public: // for now
 	Component* loadComponent(const QString& _s, Component* c) const;
+  int  prepareNetlist(DocumentStream& a, QStringList& b, QPlainTextEdit* c){
+	  return DocModel.prepareNetlist(a,b,c);
+  }
+  bool createLibNetlist(DocumentStream& a, QPlainTextEdit* b, int c){
+		return DocModel.createLibNetlist(a,b,c);
+  }
+  // used in main?
+  QString createNetlist(DocumentStream& a, int b){
+	  return DocModel.createNetlist(a, b);
+  }
+
 
 public:
   bool isAnalog;
@@ -496,6 +513,8 @@ public: // need access to SchematicModel. grr
   friend class MouseActions;
   friend class ImageWriter;
 };
+
+void createNodeSet(QStringList&, int&, Conductor*, Node*);
 
 // ---------------------------------------------------
 // Performs paste function from clipboard
