@@ -54,7 +54,14 @@ class SchematicLanguage;
 
 class SchematicModel{
 private:
-  SchematicModel() : _doc(nullptr){}
+  SchematicModel() = delete;
+#if 0
+  SchematicModel() : _doc(nullptr),
+	  _symbol(new SchematicSymbol());
+	{
+		incomplete();
+	}
+#endif
 public:
   SchematicModel(Schematic* s);
 public: // stuff saved from Schematic
