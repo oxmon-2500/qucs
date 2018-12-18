@@ -29,7 +29,7 @@ private:
 			}else if(Line.isEmpty()){
 			}else if(Line == "<Components>") {
 				mode='C';
-			}else if(Line == "<Symbols>") {
+			}else if(Line == "<Symbol>") {
 				mode='S';
 			}else if(Line == "<Wires>") {
 				mode='W';
@@ -44,7 +44,15 @@ private:
 				if(mode=='C'){
 					c = getComponentFromName(Line, s /*connect ports?*/);
 				}else if(mode=='S'){
-//					if(!symbolPaintings().load(&stream))
+//					// fix later.
+					SchematicSymbol* s=new SchematicSymbol();
+					try{
+						qDebug() << "symbol Paintings";
+						s->symbolPaintings().load(&stream);
+						c = s;
+					}catch(...){
+						incomplete();
+					}
 				}else if(mode=='W'){
 					// (Node*)4 =  move all ports (later on)
 					Wire* w = new Wire(0,0,0,0, (Node*)4,(Node*)4);
