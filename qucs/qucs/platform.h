@@ -1,22 +1,22 @@
 /***************************************************************************
                                 platform.h
                                 ----------
-    begin                : yes
-    copyright            : 2016 by Felix Salfelder
-    email                : felix@salfelder.org
+    copyright            : QUCS team
+    author               : 2016-2018 Felix Salfelder
+                           2009 Albert Davis
  ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
+ *   the Free Software Foundation; either version 3 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
-// platform dependent definitions
-// inspired by gnucap md.h
+// platform dependent definitions, mainly for non-POSIX systems
+// essentially gnucap md.h, "machine dependent" header.
 
 #ifndef PLATFORM_H_INCLUDED
 #define PLATFORM_H_INCLUDED
@@ -47,19 +47,26 @@
 
 /*--------------------------------------------------------------------------*/
 /* portability hacks, the serious stuff */
+#define PATHSEP		':'
 
 #if !defined(MS_DLL)
   // The usual way for POSIX compliant systems
+  #define	ENDDIR		"/"
   #define SOEXT ".so"
   #include <dlfcn.h>
   #define INTERFACE
 #else
 // Microsoft DLL hacks -- thanks to Holger Vogt and Cesar Strauss for the info
 // Make the MS DLL functions look like the posix ones.
+#define	ENDDIR		"/\\"
 #define SOEXT ".dll"
 #define Arc HIDE_Arc
+#define Rectangle HIDE_Rect
+#define Ellipse HIDE_Ell
 #include <windows.h>
 #undef Arc
+#undef Rectangle
+#undef Ellipse
 #include <stdlib.h>
 #include <string.h>
 #undef min
@@ -84,6 +91,7 @@ inline void dlclose(void* h)
   FreeLibrary((HINSTANCE)h);
 }
 
+#if 1 // not yet
 inline char* dlerror()
 {
   static LPVOID lpMsgBuf = NULL;
@@ -105,6 +113,7 @@ inline char* dlerror()
 		0, NULL);
   return (char*)lpMsgBuf;
 }
+#endif // windows stuff
 #define RTLD_LAZY       0x00001 /* Lazy function call binding.  */
 #define RTLD_NOW        0x00002 /* Immediate function call binding.  */
 #define RTLD_BINDING_MASK   0x3 /* Mask of binding time value.  */
