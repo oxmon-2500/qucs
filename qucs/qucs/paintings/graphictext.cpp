@@ -29,6 +29,8 @@
 
 #include <cmath>
 
+#include "some_font_stuff.h"
+
 GraphicText::GraphicText() : Painting()
 {
   Name = "Text ";
@@ -164,7 +166,7 @@ bool GraphicText::load(const QString& s)
 
   misc::convert2Unicode(Text);
   // get size of text using the screen-compatible metric
-  QFontMetrics metrics(QucsSettings.font, 0);
+  FontMetrics metrics;
   QSize r = metrics.size(0, Text);    // get overall size of text
   x2 = r.width();
   y2 = r.height();
