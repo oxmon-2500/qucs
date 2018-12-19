@@ -1414,21 +1414,24 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
 
       // load subcircuit schematic
       s = pc->Props.first()->Value;
-      SchematicModel *d = new SchematicModel(nullptr);
+      SchematicModel sm(nullptr);
+      SchematicModel* d=&sm;
 
       // todo: error handling.
-      QFile file(pc->getSubcircuitFile());
-      qDebug() << "TestFile.opening" << pc->getSubcircuitFile();
+      QString scktfilename(pc->getSubcircuitFile());
+      QFile file(scktfilename);
+      qDebug() << "getting sckt definition from" << scktfilename;
       file.open(QIODevice::ReadOnly);
-      DocumentStream stream (&file);
-      d->parse(stream);
-
+      DocumentStream pstream(&file);
+      d->setFileInfo(scktfilename);
+      d->parse(pstream);
+      d->setDevType(s);
 
       // d->setDocName(s);
       // d->isVerilog = isVerilog;
       // d->isAnalog = isAnalog;
       // d->creatingLib = creatingLib; wtf?
-      r = d->createSubNetlist(stream, countInit, Collect, ErrText, NumPorts);
+      r = d->createSubNetlist(stream, countInit, Collect, ErrText, NumPorts, creatingLib);
       if (r)
       {
         i = 0;
@@ -1443,7 +1446,6 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
         sub.PortTypes = d->PortTypes;
         FileList.insert(f, sub);
       }
-      delete d;
       if(!r)
       {
         return false;
@@ -1551,8 +1553,11 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
 // Follows the wire lines in order to determine the node names for
 // each component. Output into "stream", NodeSets are collected in
 // "Collect" and counted with "countInit".
+//
+// BUG prints stuff.
 bool SchematicModel::giveNodeNames(DocumentStream& stream, int& countInit,
-                   QStringList& Collect, QPlainTextEdit *ErrText, int NumPorts)
+                   QStringList& Collect, QPlainTextEdit *ErrText, int NumPorts,
+		   bool creatingLib)
 {
   bool isAnalog=true;
   // delete the node names
@@ -1578,7 +1583,7 @@ bool SchematicModel::giveNodeNames(DocumentStream& stream, int& countInit,
   }
 
   // go through components
-  if(!throughAllComps(stream, countInit, Collect, ErrText, NumPorts)){
+  if(!throughAllComps(stream, countInit, Collect, ErrText, NumPorts, creatingLib)){
     fprintf(stderr, "Error: Could not go throughAllComps\n");
     return false;
   }
@@ -1599,6 +1604,7 @@ bool SchematicModel::giveNodeNames(DocumentStream& stream, int& countInit,
 bool SchematicModel::createLibNetlist(DocumentStream& stream, QPlainTextEdit
     *ErrText, int NumPorts)
 {
+  qDebug() << "createLibNetlist";
   bool isAnalog=true;
   bool isVerilog=false;
   DigMap Signals; //?!
@@ -1609,9 +1615,10 @@ bool SchematicModel::createLibNetlist(DocumentStream& stream, QPlainTextEdit
   Signals.clear();
   // Apply node names and collect subcircuits and file include
   bool creatingLib = true;
-  if(!giveNodeNames(stream, countInit, Collect, ErrText, NumPorts /*, creatinglib?*/)) {
+  if(!giveNodeNames(stream, countInit, Collect, ErrText, NumPorts, creatingLib)) {
     creatingLib = false;
     return false;
+  }else{
   }
   creatingLib = false;
 
@@ -1627,7 +1634,7 @@ bool SchematicModel::createLibNetlist(DocumentStream& stream, QPlainTextEdit
   stream << "\n" << c << " TOP LEVEL MARK " << c << "\n";
 
   // Emit subcircuit components
-  createSubNetlistPlain(stream, ErrText, NumPorts);
+  createSubNetlistPlain(stream, ErrText, NumPorts, creatingLib);
 
   Signals.clear();  // was filled in "giveNodeNames()"
   return true;
@@ -1642,6 +1649,7 @@ bool SchematicModel::createLibNetlist(DocumentStream& stream, QPlainTextEdit
 void SchematicModel::createSubNetlistPlain(DocumentStream& stream, QPlainTextEdit *ErrText,
 int NumPorts, bool creatingLib)
 {
+  qDebug() << "createSubNetlistPlain" << creatingLib;
   DigMap Signals; //?!
   bool isAnalog=true;
   bool isVerilog=false;
@@ -1670,6 +1678,8 @@ int NumPorts, bool creatingLib)
       //ErrText->appendPlainText(tr("ERROR: Cannot create library file \"%s\".").arg(f));
     }
     tstream = new QTextStream(&ofile);
+  }else{
+    qDebug() << "createSubNetlistPlain, nolib";
   }
 
   // collect subcircuit ports and sort their node names into
@@ -1735,6 +1745,7 @@ int NumPorts, bool creatingLib)
       }
     }
   }
+  qDebug() << "subckt port stuff";
 
   // remove empty subcircuit ports (missing port numbers)
   for(it_name = SubcircuitPortNames.begin(),
@@ -1752,15 +1763,17 @@ int NumPorts, bool creatingLib)
 
   QString f;
   if(doc()){
+    //???
     QString f = misc::properFileName(doc()->docName());
   }else{
-    qDebug() << "docName?" << FileInfo.absoluteFilePath();
-    incomplete();
+    f = devType();
   }
   QString Type = misc::properName(f);
+  qDebug() << "propername?" << Type;
 
   Painting *pi;
   if(isAnalog) {
+    qDebug() << "subckt definition";
     // ..... analog subcircuit ...................................
     (*tstream) << "\n.Def:" << Type << " " << SubcircuitPortNames.join(" ");
     for(pi = symbolPaintings().first(); pi != 0; pi = symbolPaintings().next())
@@ -1782,8 +1795,8 @@ int NumPorts, bool creatingLib)
 
     (*tstream) << ".Def:End\n";
 
-  }
-  else {
+  } else {
+    incomplete();
     if (isVerilog) {
       // ..... digital subcircuit ...................................
       (*tstream) << "\nmodule Sub_" << Type << " ("
@@ -1921,15 +1934,18 @@ int NumPorts, bool creatingLib)
 // ---------------------------------------------------
 // Write the netlist as subcircuit to the text stream 'stream'.
 bool SchematicModel::createSubNetlist(DocumentStream& stream, int& countInit,
-                     QStringList& Collect, QPlainTextEdit *ErrText, int NumPorts)
+                     QStringList& Collect, QPlainTextEdit *ErrText, int NumPorts,
+		     bool creatingLib)
 {
+  qDebug() << "createSubNetlist";
   DigMap Signals; //??
 //  int Collect_count = Collect.count();   // position for this subcircuit
 
   // TODO: NodeSets have to be put into the subcircuit block.
-  if(!giveNodeNames(stream, countInit, Collect, ErrText, NumPorts)){
+  if(!giveNodeNames(stream, countInit, Collect, ErrText, NumPorts, creatingLib)){
     fprintf(stderr, "Error giving NodeNames in createSubNetlist\n");
     return false;
+  }else{
   }
 
 /*  Example for TODO
@@ -1941,7 +1957,7 @@ bool SchematicModel::createSubNetlist(DocumentStream& stream, int& countInit,
       else it++;*/
 
   // Emit subcircuit components
-  createSubNetlistPlain(stream, ErrText, NumPorts);
+  createSubNetlistPlain(stream, ErrText, NumPorts, creatingLib);
 
   Signals.clear();  // was filled in "giveNodeNames()"
   return true;
@@ -1950,7 +1966,7 @@ bool SchematicModel::createSubNetlist(DocumentStream& stream, int& countInit,
 // ---------------------------------------------------
 // Determines the node names and writes subcircuits into netlist file.
 int SchematicModel::prepareNetlist(DocumentStream& stream, QStringList& Collect,
-                              QPlainTextEdit *ErrText)
+                              QPlainTextEdit *ErrText, bool creatingLib)
 {
   //if(showBias > 0) showBias = -1;  // do not show DC bias anymore
 
@@ -2024,7 +2040,7 @@ int SchematicModel::prepareNetlist(DocumentStream& stream, QStringList& Collect,
   }
 
   int countInit = 0;  // counts the nodesets to give them unique names
-  if(!giveNodeNames(stream, countInit, Collect, ErrText, NumPorts)){
+  if(!giveNodeNames(stream, countInit, Collect, ErrText, NumPorts, creatingLib)){
     fprintf(stderr, "Error giving NodeNames\n");
     return -10;
   }
