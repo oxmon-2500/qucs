@@ -157,7 +157,7 @@ int Component::getTextSelected(int x_, int y_, float Corr)
   y_ -= ty;
   int w, dy = int(float(y_) * Corr);  // correction for font scaling
   // use the screen-compatible metric
-  QFontMetrics  metrics(QucsSettings.font, 0);
+  FontMetrics  metrics;
   if(showName) {
     w  = metrics.width(Name);
     if(dy < 1) {
@@ -337,7 +337,7 @@ void Component::paintScheme(Schematic *p)
     newFont.setWeight(QFont::DemiBold);
     // here the font metric is already the screen metric, since the font
     // is the current font the painter is using
-    QFontMetrics  metrics(newFont);
+    FontMetrics  metrics; // (newFont);
 
     a = b = 0;
     QSize r;
@@ -606,7 +606,7 @@ void Component::mirrorY()
   tmp = x1;
   x1  = -x2; x2 = -tmp;   // mirror boundings
   // use the screen-compatible metric
-  QFontMetrics  metrics(QucsSettings.font, 0);   // get size of text
+  FontMetrics  metrics;
   int dx = 0;
   if(showName)
     dx = metrics.width(Name);
