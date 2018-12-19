@@ -354,6 +354,7 @@ int Schematic::saveSymbolJSON()
 int Schematic::saveDocument()
 {
   QFile file(docName());
+  qDebug() << "opening" << docName();
   if(!file.open(QIODevice::WriteOnly)) {
     QMessageBox::critical(0, QObject::tr("Error"),
 				QObject::tr("Cannot save document!"));
@@ -1019,6 +1020,7 @@ bool SchematicModel::loadDocument(QFile& /*BUG*/ file)
 bool Schematic::loadDocument()
 {
   QFile file(docName());
+  qDebug() << "opening" << docName();
   if(!file.open(QIODevice::ReadOnly)) { untested();
     /// \todo implement unified error/warning handling GUI and CLI
     if (QucsMain)
@@ -1029,7 +1031,7 @@ bool Schematic::loadDocument()
                   << QObject::tr("Cannot load document: ")+docName();
     return false;
   }else{
-    setFileInfo(docName());
+    DocModel.setFileInfo(docName());
 
     DocModel.loadDocument(file);
     // scene()->loadModel(DocModel); // ??
@@ -1128,6 +1130,7 @@ bool Schematic::rebuild(QString *s)
   DocModel.clear();
 
   QString Line;
+  qDebug() << "rebuild. opening" << *s;
   ModelStream stream(s, QIODevice::ReadOnly);
   Line = stream.readLine();  // skip identity byte
 
@@ -1144,6 +1147,7 @@ bool Schematic::rebuildSymbol(QString *s)
   symbolPaintings().clear();	// delete whole document
 
   QString Line;
+  qDebug() << "rebuild. opening" << *s;
   QTextStream stream(s, QIODevice::ReadOnly);
   Line = stream.readLine();  // skip identity byte
 
@@ -1222,6 +1226,7 @@ int Schematic::testFile(const QString& DocName)
   QTextStream ReadWhole(&file);
   QString FileString = ReadWhole.readAll();
   file.close();
+  qDebug() << "ReadWhole opening" << FileString;
   QTextStream stream(&FileString, QIODevice::ReadOnly);
 
 
@@ -1385,6 +1390,7 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
       assert(sckt);
       sckt->setSchematicModel (this);
       QString f = pc->getSubcircuitFile();
+      qDebug() << "sckt" << f;
       SubMap::Iterator it = FileList.find(f);
       if(it != FileList.end()) { untested();
         if (!it.value().PortTypes.isEmpty())
@@ -1412,6 +1418,7 @@ bool SchematicModel::throughAllComps(DocumentStream& stream, int& countInit,
 
       // todo: error handling.
       QFile file(pc->getSubcircuitFile());
+      qDebug() << "TestFile.opening" << pc->getSubcircuitFile();
       file.open(QIODevice::ReadOnly);
       DocumentStream stream (&file);
       d->parse(stream);
@@ -1653,6 +1660,7 @@ int NumPorts, bool creatingLib)
   QTextStream * tstream = &stream;
   QFile ofile;
   if(creatingLib) {
+    incomplete();
     //QString f = misc::properAbsFileName(docName()) + ".lst";
     QString f = misc::properAbsFileName("INCOMPLETE.lst");
     ofile.setFileName(f);
@@ -1746,6 +1754,8 @@ int NumPorts, bool creatingLib)
   if(doc()){
     QString f = misc::properFileName(doc()->docName());
   }else{
+    qDebug() << "docName?" << FileInfo.absoluteFilePath();
+    incomplete();
   }
   QString Type = misc::properName(f);
 
