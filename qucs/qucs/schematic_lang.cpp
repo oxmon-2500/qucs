@@ -22,10 +22,9 @@ private:
 		while(!stream.atEnd()) {
 			Line = stream.readLine();
 			Line = Line.trimmed();
-			qDebug() << "LSL::parse" <<  Line;
 			if(Line.at(0) == '<'
 			  && Line.at(1) == '/'){
-				incomplete();
+				qDebug() << "endtag?" << Line;
 			}else if(Line.isEmpty()){
 			}else if(Line == "<Components>") {
 				mode='C';
@@ -35,6 +34,8 @@ private:
 				mode='W';
 			}else if(Line == "<Diagrams>") { untested();
 				mode='D';
+			}else if(Line == "<Properties>") { untested();
+				mode='Q';
 			}else if(Line == "<Paintings>") { untested();
 				mode='P';
 			}else{
@@ -62,7 +63,11 @@ private:
 						delete(w);
 					}else{
 					}
+				}else if(mode=='D'){
+					incomplete();
+				}else if(mode=='Q'){
 				}else{
+					qDebug() << "LSL::parse" <<  Line;
 					incomplete();
 				}
 
