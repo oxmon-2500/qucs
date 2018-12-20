@@ -217,7 +217,7 @@ QString SpiceFile::getSubcircuitFile()
                 else
                 {
                     /// \todo improve GUI/CLI error/warning
-                    qCritical() << "Spice file not found:" << localFileInfo.absoluteFilePath();
+                    qDebug() << "Spice file not found:" << localFileInfo.absoluteFilePath();
                 }
             }
         }
