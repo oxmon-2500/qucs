@@ -20,8 +20,6 @@
   \brief The RectDiagram class implements the Cartesian diagram
 */
 
-#include <QFontMetrics>
-
 #if HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -34,6 +32,7 @@
 #include "rectdiagram.h"
 #include "qucs.h"
 #include "misc.h"
+#include "some_font_stuff.h"
 
 
 RectDiagram::RectDiagram(int _cx, int _cy) : Diagram(_cx, _cy)
@@ -136,7 +135,7 @@ int RectDiagram::calcDiagram()
 
   double GridStep, corr, zD, zDstep, GridNum;
   // get size of text using the screen-compatible metric
-  QFontMetrics metrics(QucsSettings.font, 0);
+  FontMetrics metrics;
   y1 = QucsSettings.font.pointSize() + 6;
 
   x1 = 10;      // position of label text
