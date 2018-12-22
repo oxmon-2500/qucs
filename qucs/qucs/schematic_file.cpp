@@ -826,54 +826,6 @@ bool SchematicModel::loadWires(QTextStream *stream /*, EGPList *List */)
 }
 
 // -------------------------------------------------------------
-// // SchematicModel::?
-//  wtf is List?
-bool SchematicModel::loadDiagrams(QTextStream *stream /*, DiagramList *List */)
-{ untested();
-  DiagramList* List=&diagrams();
-  Diagram *d;
-  QString Line, cstr;
-  while(!stream->atEnd()) { untested();
-    Line = stream->readLine();
-    qDebug() << Line;
-    if(Line.at(0) == '<') if(Line.at(1) == '/') return true;
-    Line = Line.trimmed();
-    if(Line.isEmpty()) continue;
-
-    cstr = Line.section(' ',0,0);    // diagram type
-         if(cstr == "<Rect") d = new RectDiagram();
-    else if(cstr == "<Polar") d = new PolarDiagram();
-    else if(cstr == "<Tab") d = new TabDiagram();
-    else if(cstr == "<Smith") d = new SmithDiagram();
-    else if(cstr == "<ySmith") d = new SmithDiagram(0,0,false);
-    else if(cstr == "<PS") d = new PSDiagram();
-    else if(cstr == "<SP") d = new PSDiagram(0,0,false);
-    else if(cstr == "<Rect3D") d = new Rect3DDiagram();
-    else if(cstr == "<Curve") d = new CurveDiagram();
-    else if(cstr == "<Time") d = new TimingDiagram();
-    else if(cstr == "<Truth") d = new TruthDiagram();
-    /*else if(cstr == "<Phasor") d = new PhasorDiagram();
-    else if(cstr == "<Waveac") d = new Waveac();*/
-    else { untested();
-      QMessageBox::critical(0, QObject::tr("Error"),
-		   QObject::tr("Format Error:\nUnknown diagram!"));
-      return false;
-    }
-
-    if(!d->load(Line, stream)) { untested();
-      QMessageBox::critical(0, QObject::tr("Error"),
-		QObject::tr("Format Error:\nWrong 'diagram' line format!"));
-      delete d;
-      return false;
-    }else{ untested();
-    }
-    List->append(d);
-  }
-
-  QMessageBox::critical(0, QObject::tr("Error"),
-	       QObject::tr("Format Error:\n'Diagram' field is not closed!"));
-  return false;
-}
 
 // -------------------------------------------------------------
 bool SchematicModel::loadPaintings(QTextStream *stream, PaintingList*)
@@ -1068,6 +1020,7 @@ public:
 class ParseError : public std::exception{
 };
 
+#if 0
 static void parser_temporary_kludge(SchematicModel& m, ModelStream& stream)
 {
   if(!m.loadComponents(&stream)) throw ParseError();
@@ -1076,6 +1029,7 @@ static void parser_temporary_kludge(SchematicModel& m, ModelStream& stream)
   if(!m.loadPaintings(&stream)) throw ParseError();
 
 }
+#endif
 
 
 // -------------------------------------------------------------
@@ -1092,7 +1046,8 @@ bool Schematic::rebuild(QString *s)
   Line = stream.readLine();  // skip identity byte
 
   // read content *************************
-  parser_temporary_kludge(DocModel, stream);
+  incomplete();
+  //parser_temporary_kludge(DocModel, stream);
 
   return true;
 }

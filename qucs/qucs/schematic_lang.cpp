@@ -5,12 +5,16 @@
 #include "schematic_model.h"
 #include "schematic_lang.h"
 #include "globals.h"
+#include "diagrams/diagram.h" // BUG
+#include "diagrams/diagrams.h" // worse
 
 class LegacySchematicLanguage : public SchematicLanguage {
 public:
 	LegacySchematicLanguage() : SchematicLanguage(){ untested();
 		defaultSchematicLanguage = this;
 	}
+private: // stuff saved from schematic_file.cpp
+	Diagram* loadDiagram(QString const& Line, DocumentStream& /*, DiagramList *List */) const;
 private:
 	void parse(DocumentStream& stream, SchematicModel* s) const {
 		QString Line;
@@ -65,7 +69,15 @@ private:
 					}else{
 					}
 				}else if(mode=='D'){
-					incomplete();
+					qDebug() << "diagram parse?" << Line;
+
+					Diagram* d=loadDiagram(Line, stream);
+					if(d){
+						c = d;
+					}else{
+						incomplete();
+					}
+
 				}else if(mode=='Q'){
 				}else{
 					qDebug() << "LSL::parse" <<  Line;
@@ -81,3 +93,51 @@ private:
 		}
 	}
 }defaultSchematicLanguage_;
+
+Diagram* LegacySchematicLanguage::loadDiagram(QString const& line_in,
+		DocumentStream& stream /*, DiagramList *List */)const
+{ untested();
+	Diagram *d;
+	QString Line=line_in;
+	QString cstr;
+	if(!stream.atEnd()) { untested();
+		qDebug() << "diagram?" << Line;
+		if(Line.at(0) == '<') if(Line.at(1) == '/') return nullptr;
+		Line = Line.trimmed();
+		if(Line.isEmpty()){
+			return nullptr;
+		}else{
+		}
+
+		cstr = Line.section(' ',0,0);    // diagram type
+		qDebug() << "diagram section" << cstr;
+		if(cstr == "<Rect") d = new RectDiagram();
+		else if(cstr == "<Polar") d = new PolarDiagram();
+		else if(cstr == "<Tab") d = new TabDiagram();
+		else if(cstr == "<Smith") d = new SmithDiagram();
+		else if(cstr == "<ySmith") d = new SmithDiagram(0,0,false);
+		else if(cstr == "<PS") d = new PSDiagram();
+		else if(cstr == "<SP") d = new PSDiagram(0,0,false);
+		else if(cstr == "<Rect3D") d = new Rect3DDiagram();
+		else if(cstr == "<Curve") d = new CurveDiagram();
+		else if(cstr == "<Time") d = new TimingDiagram();
+		else if(cstr == "<Truth") d = new TruthDiagram();
+		/*else if(cstr == "<Phasor") d = new PhasorDiagram();
+		  else if(cstr == "<Waveac") d = new Waveac();*/
+		else { untested();
+			incomplete();
+			// throw ...
+			return nullptr;
+		}
+
+		if(!d->load(Line, stream)) { untested();
+			incomplete();
+			delete d;
+			return nullptr;
+		}else{ untested();
+		}
+		return d;
+	}
+
+	return nullptr;
+}
