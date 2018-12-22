@@ -479,8 +479,8 @@ void createDocData() {
  *  - Qucs schematic
  *  - Qucsator netlist
  */
-void createListComponentEntry(){
-
+void createListComponentEntry()
+{
   Module::registerModules ();
   QStringList cats = Category::getCategories ();
   // table for quick reference, schematic and netlist entry
@@ -831,6 +831,7 @@ int main(int argc, char *argv[])
   a.installTranslator( &tor );
   //}
 
+  Module::registerModules (); // BUG
   QucsMain = new QucsApp();
   
   QucsMain->show();
