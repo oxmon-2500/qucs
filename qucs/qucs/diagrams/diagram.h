@@ -82,6 +82,7 @@ public:
   void    getCenter(int&, int&);
   void    paintScheme(Schematic*);
   void    Bounding(int&, int&, int&, int&);
+	QRectF boundingRect() const;
   bool    getSelected(int, int);
   bool    resizeTouched(float, float, float);
   QString save();
