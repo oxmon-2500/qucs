@@ -34,7 +34,7 @@ void ElementGraphics::setSelected(bool s)
 	QGraphicsItem::setSelected(s);
 	assert(QGraphicsItem::isSelected()==s);
 	assert(_e);
-	_e->setSelected(s);
+	_e->setSelected(s); // BUG
 }
 
 // ?!
@@ -134,12 +134,6 @@ Graph* graph(QGraphicsItem* g)
 	if(!e) return nullptr;
 	return graph(e->operator->());
 }
-// Label* label(QGraphicsItem* g)
-// {
-// 	auto e=dynamic_cast<ElementGraphics*>(g);
-// 	if(!e) return nullptr;
-// 	return label(e->operator->());
-// }
 
 #endif
 
@@ -223,6 +217,44 @@ void SchematicScene::removeItem(Element const* xx)
 	}else if(auto n=node(x)){ untested();
 	}else{
 	  	unreachable();
+	}
+}
+
+// FIXME: is the weird order really necessary?
+void SchematicScene::selectedItemsAndBoundingBox(QList<ElementGraphics*>& ElementCache, QRectF& BB)
+{
+	for(auto elt : selectedItems()){
+		BB = BB.united(elt->boundingRect());
+		ElementGraphics* eg=prechecked_cast<ElementGraphics*>(elt);
+		assert(eg);
+		if(auto l=wireLabel(elt)){
+			ElementCache.append(eg);
+		}else{
+		}
+	}
+	for(auto elt : selectedItems()){
+		ElementGraphics* eg=prechecked_cast<ElementGraphics*>(elt);
+		assert(eg);
+		if(auto c=component(elt)){
+			ElementCache.append(eg);
+		}else{
+		}
+	}
+	for(auto elt : selectedItems()){
+		ElementGraphics* eg=prechecked_cast<ElementGraphics*>(elt);
+		assert(eg);
+		if(auto w=wire(elt)){
+			ElementCache.append(eg);
+		}else{
+		}
+	}
+	for(auto elt : selectedItems()){
+		ElementGraphics* eg=prechecked_cast<ElementGraphics*>(elt);
+		assert(eg);
+		if(auto p=painting(elt)){
+			ElementCache.append(eg);
+		}else{
+		}
 	}
 }
 #endif

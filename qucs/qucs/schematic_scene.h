@@ -25,6 +25,7 @@
 #define SCHEMATICSCENE_H_
 
 #include <QGraphicsScene>
+#include <QList> // BUG
 #include <QGraphicsItem>
 #include <assert.h>
 
@@ -33,6 +34,7 @@
 class Element;
 
 #ifndef USE_SCROLLVIEW
+class ElementGraphics;
 class SchematicScene : public QGraphicsScene
 {
 Q_OBJECT
@@ -48,6 +50,7 @@ public:
 	  QGraphicsScene::removeItem((QGraphicsItem*)x);
   }
 
+  void selectedItemsAndBoundingBox(QList<ElementGraphics*>& ElementCache, QRectF& BB);
   void removeItem(Element const*);
 
 private:
