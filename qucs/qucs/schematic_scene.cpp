@@ -79,42 +79,67 @@ ElementGraphics* Schematic::itemAt(float x, float y)
 }
 
 #ifndef USE_SCROLLVIEW
-Element* element(ElementGraphics* e){
+// scene()->selectedItems gives QGraphicsItems
+Element* element(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return e->operator->();
 }
-Component* component(ElementGraphics* e){
+Component* component(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return component(e->operator->());
 }
-Wire* wire(ElementGraphics* e){
+Wire* wire(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return wire(e->operator->());
 }
-WireLabel* wireLabel(ElementGraphics* e){
+WireLabel* wireLabel(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return wireLabel(e->operator->());
 }
-Diagram* diagram(ElementGraphics* e){
+Diagram* diagram(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return diagram(e->operator->());
 }
-Painting* painting(ElementGraphics* e){
+Painting* painting(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return painting(e->operator->());
 }
-Marker* marker(ElementGraphics* e){
+Marker* marker(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return marker(e->operator->());
 }
-Node* node(ElementGraphics* e){
+Node* node(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return node(e->operator->());
 }
-Graph* graph(ElementGraphics* e){
+Graph* graph(QGraphicsItem* g)
+{
+	auto e=dynamic_cast<ElementGraphics*>(g);
 	if(!e) return nullptr;
 	return graph(e->operator->());
 }
+// Label* label(QGraphicsItem* g)
+// {
+// 	auto e=dynamic_cast<ElementGraphics*>(g);
+// 	if(!e) return nullptr;
+// 	return label(e->operator->());
+// }
 
 #endif
 

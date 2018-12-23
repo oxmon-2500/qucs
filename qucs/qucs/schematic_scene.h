@@ -129,15 +129,16 @@ WireLabel const* const_wireLabel(ElementGraphics const);
 Diagram const* const_diagram(ElementGraphics const);
 Painting const* const_painting(ElementGraphics const);
 
-Element* element(ElementGraphics*);
-Component* component(ElementGraphics*);
-Wire* wire(ElementGraphics*);
-WireLabel* wireLabel(ElementGraphics*);
-Diagram* diagram(ElementGraphics*);
-Painting* painting(ElementGraphics*);
-Graph* graph(ElementGraphics*);
-Marker* marker(ElementGraphics*);
-Node* node(ElementGraphics*);
+Element* element(QGraphicsItem*);
+Component* component(QGraphicsItem*);
+Wire* wire(QGraphicsItem*);
+WireLabel* wireLabel(QGraphicsItem*);
+Diagram* diagram(QGraphicsItem*);
+Painting* painting(QGraphicsItem*);
+Graph* graph(QGraphicsItem*);
+Marker* marker(QGraphicsItem*);
+Node* node(QGraphicsItem*);
+// Label* label(QGraphicsItem*);
 #endif
 
 
