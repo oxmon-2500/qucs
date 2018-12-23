@@ -85,11 +85,7 @@ private: // later: Qgraphics virtual overrides
 //  void paint() { assert(_e); _e->paint(); }
 //  void paintScheme(Schematic *s) { assert(_e); _e->paintScheme(s); }
   QRectF boundingRect() const;
-  void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*){
-	  assert(_e);
-	  ViewPainter v(painter);
-	  return _e->paint(&v);
-  }
+  void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*); // const...
 
 public:
   // TODO: move coordinate stuff here.
