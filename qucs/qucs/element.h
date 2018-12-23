@@ -187,6 +187,13 @@ public:
   }
   bool isSelected() const{return Selected;}
 
+  QString const& name() const{
+	  return Name;
+  }
+
+protected: // BUG, private
+  QString Name;
+
 public: // BUG
   bool Selected;
   int  Type;    // whether it is Component, Wire, ...

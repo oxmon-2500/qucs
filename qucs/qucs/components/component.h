@@ -108,8 +108,6 @@ public:
 private:
 protected: // BUG
   QString Model;
-protected: // BUG => Element.
-  QString Name;
 protected: // BUG
   QString  Description;
 protected:
