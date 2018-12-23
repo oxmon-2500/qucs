@@ -224,8 +224,15 @@ void SchematicScene::removeItem(Element const* xx)
 void SchematicScene::selectedItemsAndBoundingBox(QList<ElementGraphics*>& ElementCache, QRectF& BB)
 {
 	for(auto elt : selectedItems()){
-		BB = BB.united(elt->boundingRect());
+		if(BB.isEmpty()){
+			// BUG
+			BB = elt->boundingRect();
+		}else{
+			BB = BB.united(elt->boundingRect());
+		}
 		ElementGraphics* eg=prechecked_cast<ElementGraphics*>(elt);
+		qDebug() << "selected" << element(eg)->name() << element(eg)->boundingRect();
+		qDebug() << "unite" << BB;
 		assert(eg);
 		if(auto l=wireLabel(elt)){
 			ElementCache.append(eg);
