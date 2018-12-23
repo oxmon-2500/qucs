@@ -106,6 +106,7 @@ public:
 
   void clear();
   void pushBack(Element* what);
+  void erase(Element* what);
 public:
   void merge(SchematicModel&);
 
