@@ -221,7 +221,7 @@ Painting* painting(Element*);
 Graph* graph(Element*);
 Marker* marker(Element*);
 Node* node(Element*);
-Label* label(Element*);
+// Label* label(Element*);
 
 
 #endif
