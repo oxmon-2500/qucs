@@ -25,7 +25,11 @@
 
 #include "trace.h"
 
-#if QT_VERSION < 0x050000
+#ifndef QT_MAJOR_VERSION
+#define QT_MAJOR_VERSION (QT_VERSION >> 16)
+#endif
+
+#if QT_MAJOR_VERSION < 5
 # define USE_SCROLLVIEW
 #endif
 
@@ -307,10 +311,6 @@ private:
 	bool _autodelete;
 	iterator cur;
 };
-
-#ifndef QT_MAJOR_VERSION
-#define QT_MAJOR_VERSION (QT_VERSION >> 16)
-#endif
 
 #if QT_VERSION >= 0x050000
 

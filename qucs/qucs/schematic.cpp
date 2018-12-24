@@ -1137,11 +1137,14 @@ bool Schematic::rotateElements()
 {
   QRectF BB(1., 1., -1. , -1.);
   QList<ElementGraphics*> ElementCache;
+
+#ifdef USE_SCROLLVIEW
+  ElementCache = Schematic::cropSelectedElements();
+#else
   assert(scene());
-
   scene()->selectedItemsAndBoundingBox(ElementCache, BB);
-
   assert(BB.isEmpty() == ElementCache.isEmpty());
+#endif
 
   qreal _x1, _x2, _y1, _y2;
   BB.getCoords(&_x1, &_y1, &_x2, &_y2);
@@ -1235,12 +1238,14 @@ bool Schematic::mirrorXComponents()
 { untested();
   QRectF BB(1., 1., -1. , -1.);
   QList<ElementGraphics*> ElementCache;
+
+#ifdef USE_SCROLLVIEW
+  ElementCache = Schematic::cropSelectedElements();
+#else
   assert(scene());
-
   scene()->selectedItemsAndBoundingBox(ElementCache, BB);
-  qDebug() << "getBB" << BB;
-
   assert(BB.isEmpty() == ElementCache.isEmpty());
+#endif
 
   qreal _x1, _x2, _y1, _y2;
   BB.getCoords(&_x1, &_y1, &_x2, &_y2);
@@ -1316,11 +1321,13 @@ bool Schematic::mirrorYComponents()
 
   QRectF BB(1., 1., -1. , -1.);
   QList<ElementGraphics*> ElementCache;
+#ifdef USE_SCROLLVIEW
+  ElementCache = Schematic::cropSelectedElements();
+#else
   assert(scene());
-
   scene()->selectedItemsAndBoundingBox(ElementCache, BB);
-
   assert(BB.isEmpty() == ElementCache.isEmpty());
+#endif
 
   qreal _x1, _x2, _y1, _y2;
   BB.getCoords(&_x1, &_y1, &_x2, &_y2);
@@ -1849,7 +1856,7 @@ bool Schematic::elementsOnGrid()
   Q3PtrList<WireLabel> LabelCache;
 
   // test all components
-  for(auto elt : scene()->selectedItems()){
+  for(auto elt : selectedItems()){
     if(auto pc=component(elt)){
 
       // rescue non-selected node labels
@@ -2409,5 +2416,17 @@ void Schematic::removeNode(Node const* x)
   nodes().removeRef((Node*)x);
 }
 
+QList<ElementGraphics*> Schematic::selectedItems()
+{
+#ifndef USE_SCROLLVIEW
+  assert(scene());
+  // TODO/BUG: proper iterator.
+  auto L = scene()->selectedItems();
+  auto EL = reinterpret_cast<QList<ElementGraphics*>* >(&L);
+  return *EL;
+#else
+  return cropSelectedElements();
+#endif
+}
 
 // vim:ts=8:sw=2:noet

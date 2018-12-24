@@ -137,8 +137,10 @@ Graph* graph(QGraphicsItem* g)
 
 #endif
 
-SchematicScene::SchematicScene(QObject *parent) :
-  QGraphicsScene(parent)
+SchematicScene::SchematicScene(QObject *parent)
+#ifndef USE_SCROLLVIEW
+  : QGraphicsScene(parent)
+#endif
 {
 }
 
@@ -146,9 +148,9 @@ SchematicScene::~SchematicScene()
 {
 }
 
+#ifndef USE_SCROLLVIEW
 void SchematicScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
-#ifndef USE_SCROLLVIEW
 	QGraphicsScene::drawBackground(painter, rect);
 	return;
 
@@ -176,8 +178,8 @@ void SchematicScene::drawBackground(QPainter *painter, const QRectF &rect)
 			GridY *= 16;
 		}
 	}
-#endif
 }
+#endif
 
 #ifndef USE_SCROLLVIEW
 void ElementGraphics::paintScheme(Schematic *p)

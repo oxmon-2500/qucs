@@ -30,10 +30,16 @@
 #include <assert.h>
 
 #include "viewpainter.h"
+#include "qt_compat.h"
 
 class Element;
 
-#ifndef USE_SCROLLVIEW
+#ifdef USE_SCROLLVIEW
+class SchematicScene {
+  SchematicScene (QObject *);
+  virtual ~SchematicScene ();
+};
+#else
 class ElementGraphics;
 class SchematicScene : public QGraphicsScene
 {
@@ -60,11 +66,12 @@ protected:
 };
 #endif
 
+#include "qt_compat.h"
 #include "element.h" // TODO: move implementation to .cpp
                      // also: this relates to scene, but is this the right place?
 							// (having other problems, still)
 
-#if QT_VERSION < 0x050000
+#if QT_MAJOR_VERSION < 5
 // use naked pointer, as legacy qucs does.
 typedef Element ElementGraphics;
 #else
