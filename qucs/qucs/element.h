@@ -39,6 +39,7 @@
 
 #include <QPen>
 #include <QBrush>
+#include "qt_compat.h"
 
 class Node;
 class QPainter;
@@ -178,15 +179,22 @@ public: // other stuff
   virtual void getCenter(int&, int&);
   virtual void paint(ViewPainter*);
 
-public:
+#ifndef USE_SCROLLVIEW
+private: // only called from ElementGraphics
+#endif
   void setSelected(bool b=true){
 	  Selected = b;
   }
   void toggleSelected(){
 	  Selected = !Selected;
   }
+
+#ifndef USE_SCROLLVIEW
+protected:
+#endif
   bool isSelected() const{return Selected;}
 
+public:
   QString const& name() const{
 	  return Name;
   }
@@ -194,12 +202,17 @@ public:
 protected: // BUG, private
   QString Name;
 
-public: // BUG
+private:
   bool Selected;
+public: // BUG
   int  Type;    // whether it is Component, Wire, ...
 
 protected:
   int  cx, cy, x1, y1, x2, y2;  // center and relative boundings. TODO: move.
+
+#ifndef USE_SCROLLVIEW
+  friend class ElementGraphics;
+#endif
 };
 
 
