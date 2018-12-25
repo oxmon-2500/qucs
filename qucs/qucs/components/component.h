@@ -22,6 +22,7 @@
 #include "qt_compat.h"
 
 class SchematicModel;
+class Schematic;
 class ViewPainter;
 class QString;
 class QPen;
@@ -134,6 +135,7 @@ public: // set protected variables. don't use
 		  cy=value;
 	  }
   }
+  virtual void insertComponentNodes(Schematic *sch, bool noOptimize);
 };
 
 

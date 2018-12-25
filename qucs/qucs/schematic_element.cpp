@@ -2635,14 +2635,16 @@ void Schematic::setComponentNumber(Component *c)
 }
 
 // ---------------------------------------------------
-void Schematic::insertComponentNodes(Component *c, bool noOptimize)
+// BUG: move
+void Component::insertComponentNodes(Schematic *sch, bool noOptimize)
 {
+    Component* c=this;
     // simulation components do not have ports
     if (c->Ports.empty()) return;
 
     // connect every node of the component to corresponding schematic node
     foreach(Port *pp, c->Ports)
-        pp->Connection = insertNode(pp->x+c->cx_(), pp->y+c->cy_(), c);
+        pp->Connection = sch->insertNode(pp->x+c->cx_(), pp->y+c->cy_(), c);
 
     if(noOptimize)  return;
 
@@ -2663,12 +2665,14 @@ void Schematic::insertComponentNodes(Component *c, bool noOptimize)
                 if(((Wire*)pe)->Port1 == pn)  pL = &(((Wire*)pe)->Port2->Connections);
                 else  pL = &(((Wire*)pe)->Port1->Connections);
 
-                for(pe1 = pL->first(); pe1!=0; pe1 = pL->next())
-                    if(pe1 == c)
-                    {
-                        deleteWire((Wire*)pe);
+                for(pe1 = pL->first(); pe1!=0; pe1 = pL->next()){
+                    if(pe1 == c) {
+			// ?!?!
+                        sch->deleteWire((Wire*)pe);
                         break;
-                    }
+                    }else{
+		    }
+		}
             }
     }
 }
@@ -2777,9 +2781,10 @@ void Schematic::recreateComponent(Component *Comp)
 // BUG. use pushBack
 void Schematic::insertComponent(Component *c)
 {
-    assert(0);
+    DocModel.pushBack(c);
     // connect every node of component to corresponding schematic node
-    insertComponentNodes(c, false);
+    c->insertComponentNodes(this, false);
+    return;
 
     bool ok;
     QString s;
