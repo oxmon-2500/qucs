@@ -764,7 +764,7 @@ void ComponentDialog::slotApplyPropNameSync(const QString& key){
     }
   }
   // deselect
-  prop->clearSelection();
+  //prop->clearSelection();
 }
 
 // -------------------------------------------------------------------------
@@ -1178,6 +1178,7 @@ void ComponentDialog::slotButtAdd()
   //slotSelectProperty(prop->item(row,0));
   if (prop->item(curRow, 0)->text() == editKey){
     NameEdit->setText("");
+    NameEdit->setFocus();
     edit->setText("");
     editKey="";
     editVal="";
