@@ -54,7 +54,7 @@ private slots:
   void slotEditFile();
   void slotApplyChange(const QString& Text);
   void slotApplyProperty();
-  void slotApplyPropName();
+  void slotApplyPropNameSync(const QString& Text);
 
   void slotButtAdd();
   void slotButtRem();
@@ -111,6 +111,7 @@ private:
   QComboBox *comboSim, *comboType;
 
   void updateCompPropsList(void);
+  void removeRow(int row);
 };
 
 #endif

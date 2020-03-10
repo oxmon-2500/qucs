@@ -214,8 +214,8 @@ ComponentDialog::ComponentDialog(Component *c, Schematic *d)
     int tNum = 0;
     if(s[0] == 'l') {
       if(s[1] == 'i') {
-	if(s[2] != 'n')
-	  tNum = 2;
+        if(s[2] != 'n')
+	        tNum = 2;
       }
       else  tNum = 1;
     }
@@ -342,7 +342,8 @@ ComponentDialog::ComponentDialog(Component *c, Schematic *d)
   v1->addWidget(NameEdit);
   NameEdit->setVisible(false);
   NameEdit->setValidator(ValRestrict);
-  connect(NameEdit, SIGNAL(returnPressed()), SLOT(slotApplyPropName()));
+  connect(NameEdit, SIGNAL(returnPressed())            , SLOT(slotApplyProperty()));
+  connect(NameEdit, SIGNAL(textChanged(const QString&)), SLOT(slotApplyPropNameSync(const QString&)));
 
   edit = new QLineEdit;
   v1->addWidget(edit);
@@ -745,24 +746,25 @@ void ComponentDialog::slotApplyProperty()
 }
 
 // -------------------------------------------------------------------------
-// Is called if the "RETURN"-button is pressed in the "NameEdit" Widget.
-void ComponentDialog::slotApplyPropName()
-{
-  // pick selected row
-  QTableWidgetItem *item = prop->selectedItems()[0];
-  int row = item->row();
-
-  QString name  = prop->item(row, 0)->text();
-
-  if(name != NameEdit->text()) {
-//    if(NameEdit->text() == "Export") {
-//	item->setText(0, "Export_");   // name must not be "Export" !!!
-//	NameEdit->setText("Export_");
-//    }
-//      else
-    prop->item(row, 0)->setText(NameEdit->text());
+// Is called if the text changed in the "NameEdit" Widget.
+void ComponentDialog::slotApplyPropNameSync(const QString& key){
+  // search for equal propertyName
+  for( int row = 0; row < prop->rowCount(); row++ ) {
+    if (prop->item(row, 0)->text() == key){
+      edit->setText(prop->item(row, 1)->text());
+      prop->selectRow(row);
+      return;
+    }
   }
-  edit->setFocus();   // cursor into "edit" widget
+  // no equal found, select empty or none
+  for( int row = 0; row < prop->rowCount(); row++ ) {
+    if (prop->item(row, 0)->text().isEmpty()){
+      prop->selectRow(row);
+      return;
+    }
+  }
+  // deselect
+  prop->clearSelection();
 }
 
 // -------------------------------------------------------------------------
@@ -812,10 +814,19 @@ void ComponentDialog::reject()
 }
 
 // -------------------------------------------------------------------------
-// Is called, if the "Apply"-button is pressed.
+// Is called, if the "OK" or "Apply"-button is pressed.
 void ComponentDialog::slotApplyInput()
 {
   qDebug() << " \n == Apply ";
+
+  // remove empty row inserted by ADD but not filled with values
+  for( int row = 0; row < prop->rowCount(); row++ ) {
+    if (prop->item(row, 0)->text().isEmpty() && prop->item(row, 1)->text().isEmpty()){
+      removeRow(row);
+      break;
+    }
+  }
+
   if(Comp->showName != showName->isChecked()) {
     Comp->showName = showName->isChecked();
     changed = true;
@@ -1148,39 +1159,47 @@ void ComponentDialog::slotEditFile()
 */
 void ComponentDialog::slotButtAdd()
 {
-  // Set existing equation into focus, return
+  QString editKey = NameEdit->text();
+  QString editVal = edit->text();
+
+  int curRow = prop->currentRow();
   for(int row=0; row < prop->rowCount(); row++) {
-    QString name  = prop->item(row, 0)->text();
-    if( name == NameEdit->text()) {
-      prop->setCurrentItem(prop->item(row,0));
-      slotSelectProperty(prop->item(row,0));
-      return;
+    if (prop->item(row, 0)->text().isEmpty() /*&& prop->item(row, 1)->text().isEmpty()*/){
+      // editing just added line
+      prop->item(curRow, 0)->setText(editKey);
+      prop->item(curRow, 1)->setText(editVal);
+      return; //empty row found and filled with values
     }
   }
 
-  // toggle display flag
-  QString s = tr("no");
-  if(disp->isChecked())
-    s = tr("yes");
+  // no empty row found
+  int insRow = curRow+1;// insert new row under current
+  //prop->setCurrentItem(prop->item(row,0));
+  //slotSelectProperty(prop->item(row,0));
+  if (prop->item(curRow, 0)->text() == editKey){
+    NameEdit->setText("");
+    edit->setText("");
+    editKey="";
+    editVal="";
+  }
 
-  // get number for selected row
-  int curRow = prop->currentRow();
-
-  // insert new row under current
-  int insRow = curRow+1;
   prop->insertRow(insRow);
 
   // append new row
   QTableWidgetItem *cell;
-  cell = new QTableWidgetItem(NameEdit->text());
+
+  cell = new QTableWidgetItem(editKey);
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
   prop->setItem(insRow, 0, cell);
-  cell = new QTableWidgetItem(edit->text());
+
+  cell = new QTableWidgetItem(editVal);
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
   prop->setItem(insRow, 1, cell);
-  cell = new QTableWidgetItem(s);
+
+  cell = new QTableWidgetItem(disp->isChecked()? tr("yes") : tr("no"));
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
   prop->setItem(insRow, 2, cell);
+
   // no description? add empty cell
   cell = new QTableWidgetItem("");
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
@@ -1196,6 +1215,12 @@ void ComponentDialog::slotButtAdd()
  If desc is empy, ButtRem is enabled, this slot handles if it is clicked.
  Used with: Equations, ?
 */
+void ComponentDialog::removeRow(int row){
+  prop->setCurrentItem(prop->item(row+1,0));
+  slotSelectProperty(prop->item(row+1,0));
+  prop->removeRow(row);
+}
+
 void ComponentDialog::slotButtRem()
 {
   if(prop->rowCount() < 3)
@@ -1209,10 +1234,8 @@ void ComponentDialog::slotButtRem()
 
   // peek next, delete current, set next current
   if ( row < prop->rowCount()) {
-    prop->setCurrentItem(prop->item(row+1,0));
-    slotSelectProperty(prop->item(row+1,0));
-    prop->removeRow(row);
-    }
+    removeRow(row);
+  }
 }
 
 /*!
