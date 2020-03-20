@@ -762,10 +762,6 @@ int main(int argc, char *argv[])
       createListComponentEntry();
       return 0;
     }
-    else if(!strcmp(argv[i], "-check-libraries")) {
-      QucsApp *app = new QucsApp();
-      return app->checkLibs();
-    }
     else {
       fprintf(stderr, "Error: Unknown option: %s\n", argv[i]);
       return -1;

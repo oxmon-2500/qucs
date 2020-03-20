@@ -26,7 +26,6 @@
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 #include <QList>
-//#include "../qucs-lib/qucslib_common.h"
 class ComponentLibrary;
 
 /**
@@ -336,7 +335,6 @@ public:
   void updatePathList(QStringList);
   void updateSchNameHash(void); // maps all schematic files in the path list
   void updateSpiceNameHash(void); // maps all spice files in the path list
-  int  checkLibs(void);
 
 /* **************************************************
    *****  The following methods are located in  *****
