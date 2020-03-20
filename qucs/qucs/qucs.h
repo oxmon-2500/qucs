@@ -25,6 +25,9 @@
 #include <QDir>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
+#include <QList>
+//#include "../qucs-lib/qucslib_common.h"
+class ComponentLibrary;
 
 /**
  * @file qucs.h
@@ -322,6 +325,8 @@ private:
 
   void updateRecentFilesList(QString s);
   void successExportMessages(bool ok);
+  void parseLibraries (const QString libDir, QList<ComponentLibrary> &libList);
+  int  createTreeItems(const QString libDir, QList<QTreeWidgetItem *> &topitems);
   void fillLibrariesTreeView (void);
 
 public:
@@ -331,6 +336,7 @@ public:
   void updatePathList(QStringList);
   void updateSchNameHash(void); // maps all schematic files in the path list
   void updateSpiceNameHash(void); // maps all spice files in the path list
+  int  checkLibs(void);
 
 /* **************************************************
    *****  The following methods are located in  *****

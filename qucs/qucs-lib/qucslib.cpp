@@ -576,4 +576,3 @@ void QucsLib::slotShowComponent(QListWidgetItem *Item)
     //!!   returns back to the last selected category instead
 }
 
-
