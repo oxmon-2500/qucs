@@ -24,7 +24,7 @@
 #include "qucslib.h"
 #include "checklibraries.h"
 
-int CheckComponentLibraries::parseLibraries (const QString LibDir, QList<ComponentLibrary> &libList, QString &errText){
+int CheckComponentLibraries::parseLibraries (const QString LibDir, QList<ComponentLibrary> &libList){
   QStringList LibFiles;
   QStringList::iterator it;
 
@@ -37,13 +37,9 @@ int CheckComponentLibraries::parseLibraries (const QString LibDir, QList<Compone
 
       ComponentLibrary parsedlibrary;
 
-      switch(parseComponentLibrary (libPath , parsedlibrary)){
-      case QUCS_COMP_LIB_IO_ERROR: //TODO
-        break;
-      case QUCS_COMP_LIB_CORRUPT:
-        break;
-      default:
-        break;
+      LIB_PARSE_RESULT ret = parseComponentLibrary (libPath , parsedlibrary);
+      if (ret!=QUCS_COMP_LIB_OK){
+        return ret;
       }
       libList.insert(libList.end(), parsedlibrary); //add element
   }
@@ -64,10 +60,10 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
   const char * SCH_FILE="tmpQucsLib.sch";
   const char * NET_FILE="tmpQucsLib.net";
   const char * LOG_FILE="qucsLib.log";
-  QString retErrText;
   QList<ComponentLibrary> libList;
-  if ( parseLibraries(QucsSettings.LibDir, libList, retErrText)!=0){
-    fprintf(stderr, "err TODO%s\n", retErrText.toAscii().data());
+  int ret = parseLibraries(QucsSettings.LibDir, libList);
+  if (ret != QUCS_COMP_LIB_OK){
+    fprintf(stderr, "Error %d in parseLibraries\n", ret);
     return -1;
   }
 
@@ -113,13 +109,13 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
       fclose(f);
       QStringList arguments;
       QString stdOut;
-      //doNetlist(SCH_FILE, NET_FILE);
 
       QString qucsProgName = qucslibProgName;
       qucsProgName.replace("/qucslib", "/qucs");
       arguments << "-n" << "-i" << SCH_FILE << "-o" << NET_FILE;
-      if (exeProcess(qucsProgName, arguments, stdOut)!=0){
-        //TODO
+      ret = exeProcess(qucsProgName, arguments, stdOut);
+      if (ret!=0){
+        fprintf(stderr, "Error %d in %s\n", ret, qucsProgName.toAscii().data());
       }
       QString qucsatorProgName = qucslibProgName;
       qucsatorProgName.replace("/qucslib", "/qucsator");
