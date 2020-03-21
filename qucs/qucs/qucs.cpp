@@ -71,10 +71,8 @@
 #include "octave_window.h"
 #include "printerwriter.h"
 #include "imagewriter.h"
-#include "misc.h"
 #include "../qucs-lib/qucslib_common.h"
-
-extern int doNetlist(QString schematic, QString netlist);
+#include "misc.h"
 
 struct iconCompInfoStruct
 {
@@ -2835,6 +2833,7 @@ void QucsApp::slotSaveSchematicToGraphicsFile(bool diagram)
   }
   delete writer;
 }
+
 
 // #########################################################################
 // Loads the settings file and stores the settings.
