@@ -29,7 +29,7 @@ class CheckComponentLibraries  {
     static int parseLibraries (const QString LibDir, QList<ComponentLibrary> &libList);
     static int exeProcess(const QString processPath, const QStringList arguments, QString &stdOut);
   public:
-    int checkComponentLibraries(const char *argv0, const QString componentName);
+    int checkComponentLibraries(const char *argv0, const QString componentName, QStringList &);
 };
 
 #endif /* CHECKLIBRARIES_H */

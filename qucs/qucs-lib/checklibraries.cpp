@@ -37,7 +37,7 @@ int CheckComponentLibraries::parseLibraries (const QString LibDir, QList<Compone
 
       ComponentLibrary parsedlibrary;
 
-      LIB_PARSE_RESULT ret = parseComponentLibrary (libPath , parsedlibrary);
+      int ret = parseComponentLibrary (libPath , parsedlibrary);
       if (ret!=QUCS_COMP_LIB_OK){
         return ret;
       }
@@ -55,7 +55,7 @@ int CheckComponentLibraries::exeProcess(const QString processPath, const QString
   stdOut = QString(simProcess.readAllStandardOutput().data());
   return simProcess.exitCode();
 }
-int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QString componentName){
+int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QString componentName, QStringList &ignoList){
   qucslibProgName = argv0;
   const char * SCH_FILE="tmpQucsLib.sch";
   const char * NET_FILE="tmpQucsLib.net";
@@ -67,13 +67,18 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
     return -1;
   }
 
+  QString libComp;
   bool ok=true;
   FILE *log = fopen(LOG_FILE, "w");
   for(ComponentLibrary parsedLibrary : libList){
+    if(ignoList.contains(parsedLibrary.name+".lib")){
+      continue;
+    }
     for (int i = 0; i < parsedLibrary.components.count (); i++){
       if (!componentName.isEmpty() && parsedLibrary.components[i].name != componentName){
         continue;
       }
+      libComp = parsedLibrary.name + "_" + parsedLibrary.components[i].name;
       //<Components>
       //<Lib PVR100AZ_B12V_1 1 90 120 20 -66 0 0 "Regulators" 0 "PVR100AZ-B12V" 0>
       //<.DC DC1 1 100 210 0 42 0 0 "26.85" 0 "0.001" 0 "1 pA" 0 "1 uV" 0 "no" 0 "150" 0 "no" 0 "none" 0 "CroutLU" 0>
@@ -115,7 +120,10 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
       arguments << "-n" << "-i" << SCH_FILE << "-o" << NET_FILE;
       ret = exeProcess(qucsProgName, arguments, stdOut);
       if (ret!=0){
-        fprintf(stderr, "Error %d in %s\n", ret, qucsProgName.toAscii().data());
+        fprintf(stderr, "%s: Error %d in %s\n",
+            libComp.toAscii().data(),
+            ret, qucsProgName.toAscii().data());
+        // cat SCH_FILE TODO
       }
       QString qucsatorProgName = qucslibProgName;
       qucsatorProgName.replace("/qucslib", "/qucsator");
