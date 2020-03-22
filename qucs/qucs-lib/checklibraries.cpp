@@ -2,7 +2,7 @@
                                 checklibraries.cpp
                                ----------
     begin                : Sat Mar 21 2020
-    copyright            : (C) 2020 by qucs
+    copyright            : (C) 2020 by qucsTeam
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,8 +17,6 @@
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
-
-#include <stdlib.h>
 
 #include <QProcess>
 #include "qucslib.h"
@@ -67,9 +65,15 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
     return -1;
   }
 
+  QStringList summary;
+  QRegExp errLine("\\n([^\\n]+error[^\\n]+)\\n");  //checker error, value of `Vj' (20.8385) is out of range `]0,10]' in `Diode:D2'
+  errLine.setMinimal(true); // non greedy
   QString libComp;
   bool ok=true;
-  FILE *log = fopen(LOG_FILE, "w");
+  QFile logFile(LOG_FILE);
+  if (!logFile.open(QIODevice::WriteOnly | QIODevice::Text))
+      return -1;
+  QTextStream log(&logFile);
   for(ComponentLibrary parsedLibrary : libList){
     if(ignoList.contains(parsedLibrary.name+".lib")){
       continue;
@@ -78,40 +82,44 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
       if (!componentName.isEmpty() && parsedLibrary.components[i].name != componentName){
         continue;
       }
-      libComp = parsedLibrary.name + "_" + parsedLibrary.components[i].name;
+      libComp = parsedLibrary.name + " " + parsedLibrary.components[i].name;
       //<Components>
       //<Lib PVR100AZ_B12V_1 1 90 120 20 -66 0 0 "Regulators" 0 "PVR100AZ-B12V" 0>
       //<.DC DC1 1 100 210 0 42 0 0 "26.85" 0 "0.001" 0 "1 pA" 0 "1 uV" 0 "no" 0 "150" 0 "no" 0 "none" 0 "CroutLU" 0>
       //</Components>
-      FILE * f = fopen (SCH_FILE, "w");
-      fprintf(f, "<Qucs Schematic 0.0.20>\n");
-      fprintf(f, "<Properties>\n");
-      fprintf(f, "  <View=0,0,800,800,1,0,0>\n");
-      fprintf(f, "  <Grid=10,10,1>\n");
-      fprintf(f, "  <DataSet=XXX.dat>\n");
-      fprintf(f, "  <DataDisplay=XXX.dpl>\n");
-      fprintf(f, "  <OpenDisplay=1>\n");
-      fprintf(f, "  <Script=XXX.m>\n");
-      fprintf(f, "  <RunScript=0>\n");
-      fprintf(f, "  <showFrame=0>\n");
-      fprintf(f, "  <FrameText0=Title>\n");
-      fprintf(f, "  <FrameText1=Drawn By:>\n");
-      fprintf(f, "  <FrameText2=Date:>\n");
-      fprintf(f, "  <FrameText3=Revision:>\n");
-      fprintf(f, "</Properties>\n");
-      fprintf(f, "<Symbol>\n");
-      fprintf(f, "</Symbol>\n");
-      fprintf(f, "<Components>\n");
-      fprintf(f, "%s\n", parsedLibrary.components[i].modelString.toAscii().data()); //<Lib XXXX,... or
-      fprintf(f, "<.DC DC1 1 100 210 0 42 0 0 \"26.85\" 0 \"0.001\" 0 \"1 pA\" 0 \"1 uV\" 0 \"no\" 0 \"150\" 0 \"no\" 0 \"none\" 0 \"CroutLU\" 0>\n");
-      fprintf(f, "</Components>\n");
-      fprintf(f, "<Wires>\n");
-      fprintf(f, "</Wires>\n");
-      fprintf(f, "<Diagrams>\n");
-      fprintf(f, "</Diagrams>\n");
-      fprintf(f, "<Paintings>\n");
-      fprintf(f, "</Paintings>\n");
-      fclose(f);
+      QFile schFile(SCH_FILE);
+      if (!schFile.open(QIODevice::WriteOnly | QIODevice::Text))
+          return -1;
+      QTextStream f(&schFile);
+      f << "<Qucs Schematic 0.0.20>"    << endl;
+      f << "<Properties>"               << endl;
+      f << "  <View=0,0,800,800,1,0,0>" << endl;
+      f << "  <Grid=10,10,1>"           << endl;
+      f << "  <DataSet=XXX.dat>"        << endl;
+      f << "  <DataDisplay=XXX.dpl>"    << endl;
+      f << "  <OpenDisplay=1>"          << endl;
+      f << "  <Script=XXX.m>"           << endl;
+      f << "  <RunScript=0>"            << endl;
+      f << "  <showFrame=0>"            << endl;
+      f << "  <FrameText0=Title>"       << endl;
+      f << "  <FrameText1=Drawn By:>"   << endl;
+      f << "  <FrameText2=Date:>"       << endl;
+      f << "  <FrameText3=Revision:>"   << endl;
+      f << "</Properties>"              << endl;
+      f << "<Symbol>"                   << endl;
+      f << "</Symbol>"                  << endl;
+      f << "<Components>"               << endl;
+      f << parsedLibrary.components[i].modelString << endl; //<Lib XXXX,... or
+      f << "<.DC DC1 1 100 210 0 42 0 0 \"26.85\" 0 \"0.001\" 0 \"1 pA\" 0 \"1 uV\" 0 \"no\" 0 \"150\" 0 \"no\" 0 \"none\" 0 \"CroutLU\" 0>" << endl;
+      f << "</Components>"              << endl;
+      f << "<Wires>"                    << endl;
+      f << "</Wires>"                   << endl;
+      f << "<Diagrams>"                 << endl;
+      f << "</Diagrams>"                << endl;
+      f << "<Paintings>"                << endl;
+      f << "</Paintings>"               << endl;
+      schFile.close();
+
       QStringList arguments;
       QString stdOut;
 
@@ -120,26 +128,47 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
       arguments << "-n" << "-i" << SCH_FILE << "-o" << NET_FILE;
       ret = exeProcess(qucsProgName, arguments, stdOut);
       if (ret!=0){
-        fprintf(stderr, "%s: Error %d in %s\n",
-            libComp.toAscii().data(),
-            ret, qucsProgName.toAscii().data());
+        log << endl;
+        log << "--------------------------" << parsedLibrary.name << "--------------------------" << endl;
+        log << qucsProgName << ": error " << ret << " " << libComp;
         // cat SCH_FILE TODO
+        QFile schFile(SCH_FILE);
+        if (!schFile.open(QIODevice::ReadOnly | QIODevice::Text))
+            return -1;
+        QTextStream in(&schFile);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            log << line << endl;
+        }
+        schFile.close();
       }
       QString qucsatorProgName = qucslibProgName;
       qucsatorProgName.replace("/qucslib", "/qucsator");
       arguments << "--check" << "-i" << NET_FILE; // qucsator --check -i tmp.net
-      if (exeProcess(qucsatorProgName, arguments, stdOut)!=0){
-        fprintf(log, "\n");
-        fprintf(log, "--------------------------%s--------------------------\n", parsedLibrary.name.toAscii().data());
-        fprintf(log, "name      : %s\n", parsedLibrary.components[i].name.toAscii().data());
-        fprintf(log, "definition: %s\n", parsedLibrary.components[i].definition.toAscii().data());
-        fprintf(log, "model     : %s\n", parsedLibrary.components[i].modelString.toAscii().data());
-        fprintf(log, "%s\n", stdOut.toAscii().data());
+      if (exeProcess(qucsatorProgName, arguments, stdOut) != 0){
+        log << endl;
+        log << "--------------------------" << parsedLibrary.name << "--------------------------" << endl;
+        log << "name      : " << parsedLibrary.components[i].name << endl;
+        log << "definition: " << parsedLibrary.components[i].definition << endl;
+        log << "model     : " << parsedLibrary.components[i].modelString << endl;
+        log << stdOut << endl;
         ok=false;
+        if (errLine.indexIn(stdOut)>=0){
+          summary << (libComp.leftJustified(24, ' ')+": "+errLine.cap(1));
+        }
       }
+    }//for
+  }//for
+  log << endl;
+  log << "--------------------------summary--------------------------" << endl;
+  if (summary.size()>0){
+    for (QString li : summary){
+      log << li << endl;
     }
+  }else{
+    log << "no errorneous components found!" << endl;
   }
-  fclose(log);
+  logFile.close();
   //
   if (componentName.isEmpty()){
     QFile f1(NET_FILE); f1.remove();
