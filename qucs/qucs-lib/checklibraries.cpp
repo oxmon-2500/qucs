@@ -123,6 +123,7 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
       QStringList arguments;
       QString stdOut;
 
+      QFile::remove(NET_FILE);
       QString qucsProgName = qucslibProgName;
       qucsProgName.replace("/qucslib", "/qucs");
       arguments << "-n" << "-i" << SCH_FILE << "-o" << NET_FILE;
@@ -131,7 +132,7 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
         log << endl;
         log << "--------------------------" << parsedLibrary.name << "--------------------------" << endl;
         log << qucsProgName << ": error " << ret << " " << libComp;
-        // cat SCH_FILE TODO
+        // cat SCH_FILE
         QFile schFile(SCH_FILE);
         if (!schFile.open(QIODevice::ReadOnly | QIODevice::Text))
             return -1;
@@ -141,6 +142,9 @@ int CheckComponentLibraries::checkComponentLibraries(const char *argv0, const QS
             log << line << endl;
         }
         schFile.close();
+        if (!QFile::exists(NET_FILE)){
+          continue;
+        }
       }
       QString qucsatorProgName = qucslibProgName;
       qucsatorProgName.replace("/qucslib", "/qucsator");
