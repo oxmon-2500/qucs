@@ -798,16 +798,3 @@ int main(int argc, char *argv[])
   return result;
 }
 // vim:ts=8:sw=2:noet
-const char * _cv(const QString s){ //for Qt debbuging
-  const int mxLgh=90;
-  int lg = s.length();
-  if (lg>mxLgh){
-    lg = mxLgh;
-  }
-  static char ret[mxLgh+1];
-  for(int i=0; i<lg; ++i){
-    ret[i]=s.data()[i].toAscii();
-  }
-  ret[lg]=0;
-  return ret;
-}

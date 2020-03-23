@@ -25,8 +25,6 @@
 #include <QDir>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
-#include <QList>
-class ComponentLibrary;
 
 /**
  * @file qucs.h
@@ -324,8 +322,6 @@ private:
 
   void updateRecentFilesList(QString s);
   void successExportMessages(bool ok);
-  void parseLibraries (const QString libDir, QList<ComponentLibrary> &libList);
-  int  createTreeItems(const QString libDir, QList<QTreeWidgetItem *> &topitems);
   void fillLibrariesTreeView (void);
 
 public:
