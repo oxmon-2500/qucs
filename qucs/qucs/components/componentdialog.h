@@ -100,6 +100,7 @@ private:
   bool        changed;
   int         tx_Dist, ty_Dist;   // remember the text position
   bool        setAllVisible; // used for toggling visibility of properties
+  int         affixedRow; //remember the row position
  
   QLabel    *textType;
   QLabel    *textSim, *textParam, *textValues, *textStart, *textStop,

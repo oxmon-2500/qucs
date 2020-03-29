@@ -214,8 +214,8 @@ ComponentDialog::ComponentDialog(Component *c, Schematic *d)
     int tNum = 0;
     if(s[0] == 'l') {
       if(s[1] == 'i') {
-        if(s[2] != 'n')
-	        tNum = 2;
+	if(s[2] != 'n')
+	  tNum = 2;
       }
       else  tNum = 1;
     }
@@ -574,6 +574,7 @@ void ComponentDialog::updateCompPropsList()
 void ComponentDialog::slotSelectProperty(QTableWidgetItem *item)
 {
   if(item == 0) return;
+  affixedRow = item->row();
   item->setSelected(true);  // if called from elsewhere, this was not yet done
 
   qDebug() << "row " << item->row(); //<< item->text()
@@ -756,15 +757,17 @@ void ComponentDialog::slotApplyPropNameSync(const QString& key){
       return;
     }
   }
-  // no equal found, select empty or none
+  // no equal found, select empty or pined
+  if (affixedRow!=-1){
+    prop->selectRow(affixedRow);
+  }
+
   for( int row = 0; row < prop->rowCount(); row++ ) {
     if (prop->item(row, 0)->text().isEmpty()){
       prop->selectRow(row);
       return;
     }
   }
-  // deselect
-  //prop->clearSelection();
 }
 
 // -------------------------------------------------------------------------
