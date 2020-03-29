@@ -1191,19 +1191,15 @@ void ComponentDialog::slotButtAdd()
 
   // append new row
   QTableWidgetItem *cell;
-
   cell = new QTableWidgetItem(editKey);
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
   prop->setItem(insRow, 0, cell);
-
   cell = new QTableWidgetItem(editVal);
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
   prop->setItem(insRow, 1, cell);
-
   cell = new QTableWidgetItem(disp->isChecked()? tr("yes") : tr("no"));
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
   prop->setItem(insRow, 2, cell);
-
   // no description? add empty cell
   cell = new QTableWidgetItem("");
   cell->setFlags(cell->flags() ^ Qt::ItemIsEditable);
