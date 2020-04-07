@@ -31,7 +31,7 @@ bin_PROGRAMS = qucslib
 dist_man_MANS = qucslib.1
 
 MOCHEADERS = qucslib.h displaydialog.h symbolwidget.h librarydialog.h \
-       qucslib_common.h
+       qucslib_common.h checklibraries.h
 
 MOCFILES = $(MOCHEADERS:.h=.moc.cpp)
 
