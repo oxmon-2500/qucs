@@ -38,7 +38,7 @@
 #include <limits>
 
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "node.h"
 #include "circuit.h"

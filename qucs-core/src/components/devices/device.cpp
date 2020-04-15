@@ -31,7 +31,7 @@
 #include <cmath>
 #include <algorithm>
 
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "node.h"
 #include "circuit.h"

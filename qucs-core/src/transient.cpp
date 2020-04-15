@@ -31,7 +31,7 @@
 #include <string.h>
 
 #include "object.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "circuit.h"
 #include "net.h"
 #include "tvector.h"

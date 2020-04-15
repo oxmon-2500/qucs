@@ -143,6 +143,7 @@ int main (int argc, char ** argv) {
       }
     }
   }
+  /*SzB*/fprintf(stderr, "--------------------------------after argv\n");
 
   // create static modules
   module::registerModules ();

@@ -33,7 +33,7 @@
 #include <cmath>
 
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "consts.h"
 #include "equation.h"

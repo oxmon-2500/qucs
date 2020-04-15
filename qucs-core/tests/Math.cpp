@@ -22,7 +22,7 @@
 
 #include "qucs_typedefs.h"
 #include "real.h"
-#include "complex.h"
+#include "math/complex.h"
 
 #include "testDefine.h"   // constants used on tests
 #include "gtest/gtest.h"  // Google Test

@@ -32,7 +32,7 @@
 #include <assert.h>
 
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "node.h"
 #include "circuit.h"
@@ -97,7 +97,7 @@ net::~net () {
   delete actions;
 }
 
-/* The copy constructor creates a new instance of the net class based
+/*    The copy constructor creates a new instance of the net class based
    on the given net object. */
 net::net (net & n) : object (n) {
   root = drop = NULL;
@@ -234,6 +234,7 @@ int net::containsAnalysis (analysis * child, int type) {
 /* This function runs all registered analyses applied to the current
    netlist, except for external analysis types. */
 dataset * net::runAnalysis (int &err) {
+  /*SzB*/fprintf(stderr, "--------------------------------net::runAnalysis\n");
   dataset * out = new dataset ();
 
   // apply some data to all analyses
@@ -256,8 +257,10 @@ dataset * net::runAnalysis (int &err) {
     }
   }
 
+  /**/fprintf(stderr, "SzB------------------------------before solve\n");
   // solve the analyses
   for (auto *a: * actions) {
+    /**/fprintf(stderr, "SzB--------------------------------loop actions %s \n", a->getName());
     if (!a->isExternal ())
     {
       a->getEnv()->runSolver ();
@@ -265,6 +268,7 @@ dataset * net::runAnalysis (int &err) {
     }
   }
 
+  /**/fprintf(stderr, "SzB--------------------------------before cleanup\n");
   // cleanup analyses
   for (auto *a: *actions) {
     if (!a->isExternal ())

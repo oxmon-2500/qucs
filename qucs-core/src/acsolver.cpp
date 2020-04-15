@@ -30,7 +30,7 @@
 #include <cmath>
 
 #include "object.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "circuit.h"
 #include "sweep.h"
 #include "net.h"
@@ -48,6 +48,7 @@ acsolver::acsolver () : nasolver<nr_complex_t> () {
   setDescription ("AC");
   xn = NULL;
   noise = 0;
+  freq = 0;
 }
 
 // Constructor creates a named instance of the acsolver class.
@@ -57,6 +58,7 @@ acsolver::acsolver (char * n) : nasolver<nr_complex_t> (n) {
   setDescription ("AC");
   xn = NULL;
   noise = 0;
+  freq = 0;
 }
 
 // Destructor deletes the acsolver class object.
@@ -71,6 +73,7 @@ acsolver::acsolver (acsolver & o) : nasolver<nr_complex_t> (o) {
   swp = o.swp ? new sweep (*(o.swp)) : NULL;
   xn = o.xn ? new tvector<nr_double_t> (*(o.xn)) : NULL;
   noise = o.noise;
+  freq = 0;
 }
 
 /* This is the AC netlist solver.  It prepares the circuit list for
@@ -213,7 +216,7 @@ void acsolver::solve_noise (void) {
 
   // compute noise voltage for each node (and voltage source)
   for (int i = 0; i < N + M; i++) {
-    z->set (0); z->set (i, -1); // modify right hand side appropriately
+    z->set (0.0); z->set (i, -1.0); // modify right hand side appropriately
     runMNA ();                  // solve
     zn = *x;                    // save transimpedance vector
 

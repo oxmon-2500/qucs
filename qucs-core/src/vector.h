@@ -30,10 +30,10 @@
 
 #include "consts.h"
 #include "precision.h"
-#include "complex.h"
+#include "math/complex.h"
 
 #ifdef log2
-#undef log2
+  #undef log2
 #endif
 
 namespace qucs {

@@ -33,7 +33,7 @@
 #include <utility>
 
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "property.h"
 #include "object.h"
 #include "variable.h"

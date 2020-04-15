@@ -43,6 +43,7 @@ libqucsUnitTest_CPPFLAGS = $(AM_CPPFLAGS) @GTEST_CPPFLAGS@ \
                            -DGTEST_HAS_PTHREAD=0
 libqucsUnitTest_SOURCES = testMain.cpp \
   test_libqucs.cpp \
+  test_trsolver.cpp \
 	Fourier.cpp \
 	Math.cpp \
 	Matrix.cpp \

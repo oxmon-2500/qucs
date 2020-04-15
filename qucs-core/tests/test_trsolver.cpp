@@ -1,7 +1,7 @@
 /*
- * Matrix.cpp - Unit test for matrix operations
+ * test_trsolver.cpp - Miscellaneous unit tests for Qucs core library
  *
- * Copyright (C) 2015 Guilherme Brondani Torri <guitorri@gmail.com>
+ * Copyright (C) 2014, 2015 Guilherme Brondani Torri <guitorri@gmail.com>
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,15 +20,19 @@
  *
  */
 
-#include "qucs_typedefs.h"
-#include "real.h"
-#include "math/complex.h"
-#include "matrix.h"
+#include <iostream>
 
+#include "qucs_typedefs.h"
+#include "object.h"
+#include "trsolver.h"
+
+#include "testDefine.h"   // constants used on tests
 #include "gtest/gtest.h"  // Google Test
 
-TEST (matrix, getCols) {
-    qucs::matrix data =  qucs::eye(3,3);
-    EXPECT_EQ ( 3 , data.getCols() );
+using namespace qucs;
+TEST (trsolver, constructor) {
+  //std::cout << "can we print info"  << std::endl;
+  trsolver *trs = new trsolver("szb"); //named instance
+  trs->clearStates();
+  //EXPECT_EQ(NULL, m->definition);
 }
-

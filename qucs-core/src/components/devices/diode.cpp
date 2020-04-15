@@ -49,6 +49,12 @@ using namespace qucs::device;
 diode::diode () : circuit (2) {
   rs = NULL;
   type = CIR_DIODE;
+  Bv = 0;
+  Ud = 0;
+  doHB = 0;
+  Qd = 0;
+  Id = 0;
+  gd = 0;
 }
 
 // Callback for S-parameter analysis.

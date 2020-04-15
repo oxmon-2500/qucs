@@ -39,7 +39,7 @@
 #include <string.h>
 
 #include "object.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "sweep.h"
 #include "vector.h"
 #include "strlist.h"

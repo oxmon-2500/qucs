@@ -43,7 +43,7 @@
 #include "compat.h"
 #include "object.h"
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "circuit.h"
 #include "sweep.h"
 #include "net.h"
@@ -101,6 +101,41 @@ e_trsolver::e_trsolver ()
 //    precinit ();
 //    ::srand (::time (NULL));
 #endif // DEBUG
+#define SZBINIT 1
+#if SZBINIT
+    abstol = 0;
+    CMethod = 0;
+    converged = 0;
+    convError = 0;
+    corrMaxOrder = 0;
+    corrOrder = 0;
+    corrType = 0;
+    current = 0;
+    delta = 0;
+    deltaMax = 0;
+    deltaMin = 0;
+    deltaOld = 0;
+    lastdelta = 0;
+    lastsynctime = 0;
+    lastasynctime = 0;
+    MaxIterations = 0;
+    ohm = 0;
+    PMethod = 0;
+    predMaxOrder = 0;
+    predOrder = 0;
+    predType = 0;
+    rejected = 0;
+    reltol = 0;
+    running = 0;
+    statConvergence = 0;
+    statIterations = 0;
+    statRejected = 0;
+    statSteps = 0;
+    stepDelta = 0;
+    saveCurrent = 0;
+    time = 0;
+    vntol = 0;
+#endif
 }
 
 // Constructor creates a named instance of the e_trsolver class.
@@ -118,6 +153,40 @@ e_trsolver::e_trsolver (char * n)
     // initialise the message function pointer to
     // point to the PrintWarningMsg function
     messagefcn = &logprint;
+#if SZBINIT
+    abstol = 0;
+    CMethod = 0;
+    converged = 0;
+    convError = 0;
+    corrMaxOrder = 0;
+    corrOrder = 0;
+    corrType = 0;
+    current = 0;
+    delta = 0;
+    deltaMax = 0;
+    deltaMin = 0;
+    deltaOld = 0;
+    lastdelta = 0;
+    lastsynctime = 0;
+    lastasynctime = 0;
+    MaxIterations = 0;
+    ohm = 0;
+    PMethod = 0;
+    predMaxOrder = 0;
+    predOrder = 0;
+    predType = 0;
+    rejected = 0;
+    reltol = 0;
+    running = 0;
+    statConvergence = 0;
+    statIterations = 0;
+    statRejected = 0;
+    statSteps = 0;
+    stepDelta = 0;
+    saveCurrent = 0;
+    time = 0;
+    vntol = 0;
+#endif
 }
 
 // Destructor deletes the e_trsolver class object.
@@ -156,6 +225,41 @@ e_trsolver::e_trsolver (e_trsolver & o)
     tHistory = o.tHistory ? new history (*o.tHistory) : NULL;
     relaxTSR = o.relaxTSR;
     initialDC = o.initialDC;
+#if SZBINIT
+    abstol = 0;
+    CMethod = 0;
+    converged = 0;
+    convError = 0;
+    corrMaxOrder = 0;
+    corrOrder = 0;
+    corrType = 0;
+    current = 0;
+    delta = 0;
+    deltaMax = 0;
+    deltaMin = 0;
+    deltaOld = 0;
+    lastdelta = 0;
+    lastsynctime = 0;
+    lastasynctime = 0;
+    MaxIterations = 0;
+    messagefcn = 0;
+    ohm = 0;
+    PMethod = 0;
+    predMaxOrder = 0;
+    predOrder = 0;
+    predType = 0;
+    rejected = 0;
+    reltol = 0;
+    running = 0;
+    statConvergence = 0;
+    statIterations = 0;
+    statRejected = 0;
+    statSteps = 0;
+    stepDelta = 0;
+    saveCurrent = 0;
+    time = 0;
+    vntol = 0;
+#endif
 }
 
 void e_trsolver::debug()

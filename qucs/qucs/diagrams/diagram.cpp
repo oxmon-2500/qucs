@@ -634,6 +634,9 @@ void Diagram::getAxisLimits(Graph *pg)
 {
   // FIXME: Graph should know the limits. but it doesn't yet.
   //        we should only copy here. better: just wrap, dont use {x,y,z}Axis
+  if (Name == QString::null){
+    return;
+  }
   int z=0;
   double x, y, *p;
   QString var, find;

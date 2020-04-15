@@ -33,7 +33,7 @@
 
 #include "consts.h"
 #include "object.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "vector.h"
 #include "fourier.h"
 

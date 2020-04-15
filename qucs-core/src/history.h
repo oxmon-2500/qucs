@@ -28,6 +28,7 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include "config.h"
 
 namespace qucs {
 
@@ -49,6 +50,7 @@ public:
       this->age = h.age;
       this->t = std::make_shared<std::vector<nr_double_t>>(*(h.t));
       this->values = std::make_shared<std::vector<nr_double_t>>(*(h.values));
+      sign = 0;
   }
 
   /*! The function appends the given value to the history. */

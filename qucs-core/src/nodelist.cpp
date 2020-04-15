@@ -32,7 +32,7 @@
 #include "logging.h"
 #include "object.h"
 #include "node.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "circuit.h"
 #include "net.h"
 #include "nodelist.h"

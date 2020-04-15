@@ -34,7 +34,7 @@
 #include "compat.h"
 #include "object.h"
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "circuit.h"
 #include "sweep.h"
 #include "net.h"
@@ -71,6 +71,30 @@ trsolver::trsolver ()
     tHistory = NULL;
     relaxTSR = false;
     initialDC = true;
+#define SZBINIT 1
+#if SZBINIT
+    CMethod = 0;
+    converged = 0;
+    corrMaxOrder = 0;
+    corrOrder = 0;
+    corrType = 0;
+    current = 0;
+    delta = 0;
+    deltaMax = 0;
+    deltaMin = 0;
+    deltaOld = 0;
+    ohm = 0;
+    PMethod = 0;
+    predMaxOrder = 0;
+    predOrder = 0;
+    predType = 0;
+    rejected = 0;
+    statConvergence = 0;
+    statIterations = 0;
+    statRejected = 0;
+    statSteps = 0;
+    stepDelta = 0;
+#endif
 }
 
 // Constructor creates a named instance of the trsolver class.
@@ -84,6 +108,29 @@ trsolver::trsolver (const std::string &n)
     tHistory = NULL;
     relaxTSR = false;
     initialDC = true;
+#if SZBINIT
+    CMethod = 0;
+    converged = 0;
+    corrMaxOrder = 0;
+    corrOrder = 0;
+    corrType = 0;
+    current = 0;
+    delta = 0;
+    deltaMax = 0;
+    deltaMin = 0;
+    deltaOld = 0;
+    ohm = 0;
+    PMethod = 0;
+    predMaxOrder = 0;
+    predOrder = 0;
+    predType = 0;
+    rejected = 0;
+    statConvergence = 0;
+    statIterations = 0;
+    statRejected = 0;
+    statSteps = 0;
+    stepDelta = 0;
+#endif
 }
 
 // Destructor deletes the trsolver class object.
@@ -110,6 +157,29 @@ trsolver::trsolver (trsolver & o)
     tHistory = o.tHistory ? new history (*o.tHistory) : NULL;
     relaxTSR = o.relaxTSR;
     initialDC = o.initialDC;
+#if SZBINIT
+    CMethod = 0;
+    converged = 0;
+    corrMaxOrder = 0;
+    corrOrder = 0;
+    corrType = 0;
+    current = 0;
+    delta = 0;
+    deltaMax = 0;
+    deltaMin = 0;
+    deltaOld = 0;
+    ohm = 0;
+    PMethod = 0;
+    predMaxOrder = 0;
+    predOrder = 0;
+    predType = 0;
+    rejected = 0;
+    statConvergence = 0;
+    statIterations = 0;
+    statRejected = 0;
+    statSteps = 0;
+    stepDelta = 0;
+#endif
 }
 
 // This function creates the time sweep if necessary.
@@ -236,6 +306,7 @@ int trsolver::solve (void)
     for (int i = 0; i < swp->getSize (); i++)
     {
         time = swp->next ();
+        fprintf(stderr, "SzB--------------------------------for time %f delta=%e\n", time, delta);
         if (progress) logprogressbar (i, swp->getSize (), 40);
 
 #if DEBUG && 0
@@ -353,6 +424,7 @@ int trsolver::solve (void)
             saveCurrent = current;
             current += delta;
             running++;
+            //**/fprintf(stderr, "SzB--------------------------------running %d %e %f %e\n", running, current, time, delta);
             converged++;
 
             // Tell integrators to be running.
@@ -367,6 +439,7 @@ int trsolver::solve (void)
             {
                 initHistory (saveCurrent);
             }
+            /**/fprintf(stderr, "SzB--------------------------------while %e < %e \n", saveCurrent, time);
         }
         while (saveCurrent < time); // Hit a requested time point?
 
@@ -929,13 +1002,10 @@ void trsolver::updateCoefficients (nr_double_t delta)
 // properties
 PROP_REQ [] =
 {
-    {
-        "Type", PROP_STR, { PROP_NO_VAL, "lin" },
-        PROP_RNG_STR2 ("lin", "log")
-    },
-    { "Start", PROP_REAL, { 0, PROP_NO_STR }, PROP_POS_RANGE },
-    { "Stop", PROP_REAL, { 1e-3, PROP_NO_STR }, PROP_POS_RANGE },
-    { "Points", PROP_INT, { 10, PROP_NO_STR }, PROP_MIN_VAL (2) },
+    { "Type"   , PROP_STR, { PROP_NO_VAL, "lin" }, PROP_RNG_STR2 ("lin", "log")},
+    { "Start"  , PROP_REAL, {    0, PROP_NO_STR }, PROP_POS_RANGE   },
+    { "Stop"   , PROP_REAL, { 1e-3, PROP_NO_STR }, PROP_POS_RANGE   },
+    { "Points" , PROP_INT , {   10, PROP_NO_STR }, PROP_MIN_VAL (2) },
     PROP_NO_PROP
 };
 PROP_OPT [] =
@@ -944,21 +1014,21 @@ PROP_OPT [] =
         "IntegrationMethod", PROP_STR, { PROP_NO_VAL, "Trapezoidal" },
         PROP_RNG_STR4 ("Euler", "Trapezoidal", "Gear", "AdamsMoulton")
     },
-    { "Order", PROP_INT, { 2, PROP_NO_STR }, PROP_RNGII (1, 6) },
-    { "InitialStep", PROP_REAL, { 1e-9, PROP_NO_STR }, PROP_POS_RANGE },
-    { "MinStep", PROP_REAL, { 1e-16, PROP_NO_STR }, PROP_POS_RANGE },
-    { "MaxStep", PROP_REAL, { 0, PROP_NO_STR }, PROP_POS_RANGE },
-    { "MaxIter", PROP_INT, { 150, PROP_NO_STR }, PROP_RNGII (2, 10000) },
-    { "abstol", PROP_REAL, { 1e-12, PROP_NO_STR }, PROP_RNG_X01I },
-    { "vntol", PROP_REAL, { 1e-6, PROP_NO_STR }, PROP_RNG_X01I },
-    { "reltol", PROP_REAL, { 1e-3, PROP_NO_STR }, PROP_RNG_X01I },
-    { "LTEabstol", PROP_REAL, { 1e-6, PROP_NO_STR }, PROP_RNG_X01I },
-    { "LTEreltol", PROP_REAL, { 1e-3, PROP_NO_STR }, PROP_RNG_X01I },
-    { "LTEfactor", PROP_REAL, { 1, PROP_NO_STR }, PROP_RNGII (1, 16) },
-    { "Temp", PROP_REAL, { 26.85, PROP_NO_STR }, PROP_MIN_VAL (K) },
-    { "Solver", PROP_STR, { PROP_NO_VAL, "CroutLU" }, PROP_RNG_SOL },
-    { "relaxTSR", PROP_STR, { PROP_NO_VAL, "no" }, PROP_RNG_YESNO },
-    { "initialDC", PROP_STR, { PROP_NO_VAL, "yes" }, PROP_RNG_YESNO },
+    { "Order"      , PROP_INT , {     2, PROP_NO_STR }, PROP_RNGII (1, 6) },
+    { "InitialStep", PROP_REAL, { 1e-9 , PROP_NO_STR }, PROP_POS_RANGE },
+    { "MinStep"    , PROP_REAL, { 1e-16, PROP_NO_STR }, PROP_POS_RANGE },
+    { "MaxStep"    , PROP_REAL, {     0, PROP_NO_STR }, PROP_POS_RANGE },
+    { "MaxIter"    , PROP_INT , {   150, PROP_NO_STR }, PROP_RNGII (2, 10000) },
+    { "abstol"     , PROP_REAL, { 1e-12, PROP_NO_STR }, PROP_RNG_X01I },
+    { "vntol"      , PROP_REAL, { 1e-6 , PROP_NO_STR }, PROP_RNG_X01I },
+    { "reltol"     , PROP_REAL, { 1e-3 , PROP_NO_STR }, PROP_RNG_X01I },
+    { "LTEabstol"  , PROP_REAL, { 1e-6 , PROP_NO_STR }, PROP_RNG_X01I },
+    { "LTEreltol"  , PROP_REAL, { 1e-3 , PROP_NO_STR }, PROP_RNG_X01I },
+    { "LTEfactor"  , PROP_REAL, {     1, PROP_NO_STR }, PROP_RNGII (1, 16) },
+    { "Temp"       , PROP_REAL, { 26.85, PROP_NO_STR }, PROP_MIN_VAL (K) },
+    { "Solver"     , PROP_STR , { PROP_NO_VAL, "CroutLU" }, PROP_RNG_SOL },
+    { "relaxTSR"   , PROP_STR , { PROP_NO_VAL, "no"      }, PROP_RNG_YESNO },
+    { "initialDC"  , PROP_STR , { PROP_NO_VAL, "yes"     }, PROP_RNG_YESNO },
     PROP_NO_PROP
 };
 struct define_t trsolver::anadef =

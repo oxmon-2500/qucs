@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "complex.h"
+#include "math/complex.h"
 #include "variable.h"
 #include "equation.h"
 #include "logging.h"

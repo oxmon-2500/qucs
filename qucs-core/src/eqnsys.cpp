@@ -39,7 +39,7 @@
 #include "compat.h"
 #include "logging.h"
 #include "precision.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "tmatrix.h"
 #include "eqnsys.h"
 #include "exception.h"

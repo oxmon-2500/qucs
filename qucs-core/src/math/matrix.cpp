@@ -93,7 +93,7 @@
 
 #include "logging.h"
 #include "object.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "vector.h"
 #include "matrix.h"
 
@@ -606,7 +606,7 @@ matrix eye (int rs, int cs) {
   matrix res (rs, cs);
   for (int r = 0; r < res.getRows (); r++)
     for (int c = 0; c < res.getCols (); c++)
-      if (r == c) res.set (r, c, 1);
+      if (r == c) res.set (r, c, 1.0);
   return res;
 }
 

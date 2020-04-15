@@ -39,7 +39,7 @@
 
 #include "logging.h"
 #include "object.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "vector.h"
 #include "matrix.h"
 #include "matvec.h"

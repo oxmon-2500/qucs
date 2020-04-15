@@ -30,9 +30,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <iostream>
 
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "matrix.h"
 #include "node.h"
@@ -75,6 +76,10 @@ circuit::circuit () : object (), integrator () {
   histories = NULL;
   nHistories = 0;
   type = CIR_UNKNOWN;
+#define SZBINIT 1
+#if SZBINIT
+  env = NULL;
+#endif
 }
 
 /* Constructor creates an unnamed instance of the circuit class with a
@@ -103,6 +108,10 @@ circuit::circuit (int s) : object (), integrator () {
   histories = NULL;
   nHistories = 0;
   type = CIR_UNKNOWN;
+#define SZBINIT 1
+#if SZBINIT
+  env = NULL;
+#endif
 }
 
 /* The copy constructor creates a new instance based on the given
@@ -950,4 +959,20 @@ nr_double_t circuit::getJ (int nr, nr_double_t t) {
   return histories[nr + getSize ()].nearest (t);
 }
 
+const char *circuit::toText(int level){
+  if (!bbf_txt){
+    bbf_txt = (char *)malloc(1024);
+  }
+  //std::cout << "subcircuit" << subcircuit << std::endl;
+  int lx=0;
+  lx += sprintf(bbf_txt, "siz=%d, subcircuit:%s", size, subcircuit.c_str());
+  if (nodes){
+    for(int x=0;x<size; ++x){
+      lx += sprintf(&bbf_txt[lx], ", nodes[%d]=%s\n", x, nodes[x].getName());
+    }
+  }
+  return bbf_txt;
+}
+
 } // namespace qucs
+

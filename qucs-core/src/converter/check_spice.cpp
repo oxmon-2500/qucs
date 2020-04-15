@@ -385,7 +385,7 @@ static struct pair_t * spice_get_pairs (struct definition_t * def) {
   foreach_value (def->values, val) {
     prop = &def->define->required[i];
     // a float given ?
-    if (val->hint & HINT_NUMBER && prop->key) {
+    if ((val->hint & HINT_NUMBER) && prop->key) {
       p = create_pair ();
       p->key = strdup (prop->key);
       p->value = spice_create_value (val->ident);
@@ -397,8 +397,8 @@ static struct pair_t * spice_get_pairs (struct definition_t * def) {
     // skip identifier if next is a float again (F and H sources)
     else if ((def->type[0] == 'F' || def->type[0] == 'H') &&
 	     strcasecmp (val->ident, "POLY") &&
-	     val->hint & HINT_NAME &&
-	     val->next && val->next->hint & HINT_NUMBER)
+	     (val->hint & HINT_NAME) &&
+	     val->next && (val->next->hint & HINT_NUMBER))
       continue;
     // break it here
     else
@@ -1317,7 +1317,7 @@ static char * spice_untranslated_text (struct definition_t * def) {
 	       ((val->hint & HINT_MSTART) && val->next &&
 	        (val->next->hint & HINT_MSTOP)) ||
 	       (val->hint & HINT_MSTOP) ? "" : " ",
-	       (val->hint & HINT_MSTART && val->next) ? "(" :
+	       ((val->hint & HINT_MSTART) && val->next) ? "(" :
 	       (val->hint & HINT_MSTOP) ? ")" : " ");
     }
     txt = (char *) realloc (txt, strlen (txt) + strlen (str) + 1);
@@ -1648,7 +1648,7 @@ struct node_t * spice_nodes = NULL;
 static void spice_collect_external_nodes (struct definition_t * def) {
   struct value_t * val;
   foreach_value (def->values, val) {
-    if (val->hint & HINT_MSTART && val->next && val->ident[0] == 'V') {
+    if ((val->hint & HINT_MSTART) && val->next && val->ident[0] == 'V') {
       struct node_t * n = spice_translate_node (val->next->ident);
       if (!qucs_find_node (spice_nodes, n->node)) {
 	n->next = spice_nodes;
@@ -2200,7 +2200,7 @@ spice_create_poly (struct value_t * prop, int nd, int integrate) {
 
   // go through spice values
   foreach_value (prop, val) {
-    if (!VAL_IS_NUMBER (val)) break;
+    if (!(VAL_IS_NUMBER (val))) break;
 
     double k = spice_get_value (val);
     spice_value_done (val);

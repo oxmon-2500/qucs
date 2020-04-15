@@ -37,7 +37,7 @@
 #include <assert.h>
 
 #include "real.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "logging.h"
 #include "strlist.h"

@@ -33,6 +33,7 @@
 
 #include "characteristic.h"
 #include "operatingpoint.h"
+#include "math/complex.h"
 
 #define NODE_1 0
 #define NODE_2 1
@@ -368,6 +369,10 @@ class circuit : public object, public integrator
   nr_double_t * deltas;
   int nHistories;
   history * histories;
+
+  char *bbf_txt=NULL;
+public:
+  const char *toText(int level);
 };
 
 } // namespace qucs

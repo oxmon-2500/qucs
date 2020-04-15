@@ -37,7 +37,7 @@
 
 #include "compat.h"
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "tmatrix.h"
 
 namespace qucs {

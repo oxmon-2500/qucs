@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <cmath>
 
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "circuit.h"
 #include "constants.h"

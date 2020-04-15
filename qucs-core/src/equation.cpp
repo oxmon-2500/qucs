@@ -33,7 +33,7 @@
 #include <ctype.h>
 
 #include "logging.h"
-#include "complex.h"
+#include "math/complex.h"
 #include "object.h"
 #include "vector.h"
 #include "matrix.h"
